@@ -11,7 +11,7 @@ export function BrandMark({
   variant = "icon",
   href = "/",
   priority = false,
-  /** auto = swap with theme; light/dark force a specific wordmark (for fixed-theme surfaces). */
+  /** auto = swap with theme; light/dark force a specific asset (for fixed-theme surfaces). */
   tone = "auto",
 }: {
   className?: string;
@@ -24,7 +24,7 @@ export function BrandMark({
 }) {
   const width = Math.round(size * WORDMARK_RATIO);
 
-  const lightImg = (
+  const wordmarkLight = (
     <Image
       src="/curriculym-wordmark.png"
       alt="curriculym"
@@ -40,7 +40,7 @@ export function BrandMark({
     />
   );
 
-  const darkImg = (
+  const wordmarkDark = (
     <Image
       src="/curriculym-wordmark-dark.png"
       alt="curriculym"
@@ -56,27 +56,57 @@ export function BrandMark({
     />
   );
 
+  const iconLight = (
+    <Image
+      src="/curriculym-logo.png"
+      alt="Curriculym"
+      width={size}
+      height={size}
+      className={cn(
+        "shrink-0 object-contain",
+        tone === "auto" && "dark:hidden",
+        className
+      )}
+      priority={priority}
+    />
+  );
+
+  const iconDark = (
+    <Image
+      src="/curriculym-logo-dark.png"
+      alt="Curriculym"
+      width={size}
+      height={size}
+      className={cn(
+        "shrink-0 object-contain",
+        tone === "auto" && "hidden dark:block",
+        className
+      )}
+      priority={priority}
+    />
+  );
+
   let mark: React.ReactNode;
   if (variant === "wordmark") {
-    if (tone === "light") mark = lightImg;
-    else if (tone === "dark") mark = darkImg;
+    if (tone === "light") mark = wordmarkLight;
+    else if (tone === "dark") mark = wordmarkDark;
     else
       mark = (
         <span className="relative inline-flex items-center">
-          {lightImg}
-          {darkImg}
+          {wordmarkLight}
+          {wordmarkDark}
         </span>
       );
+  } else if (tone === "light") {
+    mark = iconLight;
+  } else if (tone === "dark") {
+    mark = iconDark;
   } else {
     mark = (
-      <Image
-        src="/curriculym-logo.png"
-        alt="Curriculym"
-        width={size}
-        height={size}
-        className={cn("shrink-0 object-contain", className)}
-        priority={priority}
-      />
+      <span className="relative inline-flex items-center">
+        {iconLight}
+        {iconDark}
+      </span>
     );
   }
 

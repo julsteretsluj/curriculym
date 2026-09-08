@@ -11,6 +11,22 @@ export const metadata: Metadata = {
   },
   description:
     "All-in-one multi-tenant school management — IB, AP, IGCSE, A Level, and more in a macOS workspace.",
+  icons: {
+    icon: [
+      {
+        url: "/curriculym-logo.png",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/curriculym-logo-dark.png",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
