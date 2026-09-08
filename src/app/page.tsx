@@ -1,20 +1,20 @@
 import Link from "next/link";
-import { LandingNav, ProductWindowPreview } from "@/components/landing/landing-chrome";
-import { getSession } from "@/lib/session";
-import { roleHomePath } from "@/lib/auth";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { LandingNav, ProductWindowPreview } from "@/components/landing/landing-chrome";
+import { roleFromMetadata, roleHomePath } from "@/lib/clerk-roles";
 
 export default async function LandingPage() {
-  const session = await getSession();
-  if (session) {
-    redirect(roleHomePath(session.role));
+  const { userId } = await auth();
+  if (userId) {
+    const user = await currentUser();
+    redirect(roleHomePath(roleFromMetadata(user?.publicMetadata)));
   }
 
   return (
     <div className="min-h-screen bg-[#F2F2F7] text-[#1D1D1F]">
       <LandingNav />
 
-      {/* Hero — brand first, one composition */}
       <section className="relative overflow-hidden px-5 pb-16 pt-28 md:px-8 md:pb-24 md:pt-32">
         <div
           aria-hidden
@@ -40,7 +40,7 @@ export default async function LandingPage() {
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href="/login"
+                href="/sign-in"
                 className="rounded-full bg-[#007AFF] px-6 py-3 text-[15px] font-medium text-white transition hover:bg-[#0077ED]"
               >
                 Sign in to your school
@@ -60,7 +60,6 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Product */}
       <section id="product" className="px-5 py-20 md:px-8 md:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="max-w-xl">
@@ -100,7 +99,6 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Curricula */}
       <section id="curricula" className="px-5 py-20 md:px-8 md:py-28">
         <div className="mx-auto max-w-6xl">
           <div className="md:ml-auto md:max-w-xl md:text-right">
@@ -136,28 +134,35 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="px-5 pb-24 md:px-8">
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[28px] border border-black/5 bg-white px-8 py-14 text-center shadow-[0_2px_8px_rgba(0,0,0,0.08)] md:px-16">
           <h2 className="text-[28px] font-semibold tracking-tight md:text-[34px]">
             Ready for your school day?
           </h2>
           <p className="mx-auto mt-3 max-w-md text-[15px] text-[#6E6E73]">
-            Sign in to the Harbor demo workspace, or connect your own tenant when you go live.
+            Create a free account or sign in to open the Curriculym workspace.
           </p>
-          <Link
-            href="/login"
-            className="mt-8 inline-flex rounded-full bg-[#007AFF] px-6 py-3 text-[15px] font-medium text-white transition hover:bg-[#0077ED]"
-          >
-            Continue to sign in
-          </Link>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/sign-up"
+              className="inline-flex rounded-full bg-[#007AFF] px-6 py-3 text-[15px] font-medium text-white transition hover:bg-[#0077ED]"
+            >
+              Create account
+            </Link>
+            <Link
+              href="/sign-in"
+              className="inline-flex rounded-full border border-[rgba(60,60,67,0.18)] bg-white px-6 py-3 text-[15px] font-medium transition hover:bg-[#F2F2F7]"
+            >
+              Sign in
+            </Link>
+          </div>
         </div>
       </section>
 
       <footer className="border-t border-black/5 px-5 py-8 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 text-[13px] text-[#6E6E73]">
           <p className="font-medium text-[#1D1D1F]">Curriculym</p>
-          <p>Multi-tenant school management · Demo auth for Harbor International</p>
+          <p>Multi-tenant school management · Secured with Clerk</p>
         </div>
       </footer>
     </div>

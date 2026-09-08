@@ -7,7 +7,7 @@ Multi-tenant all-in-one school management system (SMS/LMS) with a **macOS deskto
 - Next.js App Router · React 19 · Tailwind CSS 4
 - Prisma · PostgreSQL (multi-tenant `tenantId` on all school data)
 - Framer Motion · Lucide · next-themes
-- Demo RBAC via in-app role switcher (Clerk/Supabase ready)
+- **Clerk** authentication (session + RBAC via `publicMetadata.role`)
 
 ## Quick start
 
@@ -16,15 +16,28 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) for the public landing page. The school workspace requires sign-in at `/login`.
+Open [http://localhost:3000](http://localhost:3000). Sign up / sign in at `/sign-up` and `/sign-in`.
 
-**Demo password:** `curriculym`  
-Accounts: `admin@harbor.edu`, `staff@harbor.edu`, `student@harbor.edu`, `parent@harbor.edu`, `cpo@harbor.edu`
+Auth keys are in `.env.local` from `npx clerk@latest init`. To claim the app under your Clerk account:
+
+```bash
+npx clerk@latest auth login
+```
+
+### Roles
+
+Set a user’s **Public metadata** in the [Clerk Dashboard](https://dashboard.clerk.com/) to control the workspace role:
+
+```json
+{ "role": "admin" }
+```
+
+Allowed values: `admin` · `staff` · `student` · `parent` · `support`  
+(Default if unset: `admin`.)
 
 ### Database (optional for UI demo)
 
 ```bash
-# Configure DATABASE_URL in .env
 cp .env.example .env
 npm run db:generate
 npm run db:push

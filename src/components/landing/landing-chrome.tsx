@@ -24,13 +24,13 @@ export function LandingNav() {
             Curricula
           </a>
           <Link
-            href="/login"
+            href="/sign-in"
             className="rounded-full px-3 py-1.5 text-[13px] font-medium text-[#1D1D1F] transition hover:bg-black/5"
           >
             Sign in
           </Link>
           <Link
-            href="/login"
+            href="/sign-up"
             className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
           >
             Open school workspace

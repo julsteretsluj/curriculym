@@ -1,16 +1,20 @@
 import { redirect } from "next/navigation";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { DashboardShell } from "@/components/macos/dashboard-shell";
-import { getSession } from "@/lib/session";
+import { roleFromMetadata } from "@/lib/clerk-roles";
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  if (!session) {
-    redirect("/login");
+  const { userId } = await auth();
+  if (!userId) {
+    redirect("/sign-in");
   }
 
-  return <DashboardShell role={session.role}>{children}</DashboardShell>;
+  const user = await currentUser();
+  const role = roleFromMetadata(user?.publicMetadata);
+
+  return <DashboardShell role={role}>{children}</DashboardShell>;
 }
