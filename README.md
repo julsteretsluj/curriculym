@@ -43,7 +43,18 @@ npm run db:generate
 npm run db:push
 ```
 
-## App routes
+## Deploy
+
+Production URL: **https://curriculym.vercel.app**
+
+GitHub `main` is connected to the Vercel project `curriculym`. Every push to `origin/main` deploys there automatically.
+
+```bash
+git push -u origin main
+# or force a production redeploy:
+vercel --prod
+```
+
 
 | Area | Path |
 |------|------|
