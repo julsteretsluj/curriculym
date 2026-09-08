@@ -14,7 +14,7 @@ export function LandingNav() {
   return (
     <header className="absolute inset-x-0 top-0 z-20">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-8">
-        <BrandMark size={28} variant="wordmark" priority />
+        <BrandMark size={28} variant="wordmark" tone="light" priority />
         <nav className="flex items-center gap-2">
           <a
             href="#product"

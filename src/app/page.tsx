@@ -31,6 +31,7 @@ export default async function LandingPage() {
               href={null}
               size={56}
               variant="wordmark"
+              tone="light"
               priority
               className="mx-auto"
             />
@@ -167,7 +168,7 @@ export default async function LandingPage() {
       <footer className="border-t border-black/5 px-5 py-8 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 text-[13px] text-[#6E6E73]">
           <div className="flex items-center gap-2 font-medium text-[#1D1D1F]">
-            <BrandMark href={null} size={22} variant="wordmark" />
+            <BrandMark href={null} size={22} variant="wordmark" tone="light" />
           </div>
           <p>Multi-tenant school management · Secured with Clerk</p>
         </div>

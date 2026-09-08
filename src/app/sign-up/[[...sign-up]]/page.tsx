@@ -19,7 +19,7 @@ export default function SignUpPage() {
         }}
       />
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-5 py-16">
-        <BrandMark size={36} variant="wordmark" className="mb-8" priority />
+        <BrandMark size={36} variant="wordmark" tone="light" className="mb-8" priority />
         <SignUp
           routing="path"
           path="/sign-up"
