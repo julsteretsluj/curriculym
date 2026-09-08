@@ -1,5 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
+import { BrandMark } from "@/components/brand-mark";
 
 export const metadata = {
   title: "Sign in",
@@ -18,9 +19,7 @@ export default function SignInPage() {
         }}
       />
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-5 py-16">
-        <Link href="/" className="mb-8 text-[17px] font-semibold tracking-tight">
-          Curriculym
-        </Link>
+        <BrandMark size={36} variant="wordmark" className="mb-8" priority />
         <SignIn
           routing="path"
           path="/sign-in"

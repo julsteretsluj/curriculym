@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useAppStore } from "@/stores/app-store";
 import type { AppRole } from "@/lib/demo-data";
+import { BrandMark } from "@/components/brand-mark";
 
 type IconKey =
   | "dashboard"
@@ -123,16 +124,14 @@ export function MacOsSidebar() {
       )}
     >
       <div className="flex h-12 items-center gap-2 px-3">
-        <div className="flex items-center gap-1.5 pl-1">
+        <div className="flex shrink-0 items-center gap-1.5 pl-1">
           <span className="h-3 w-3 rounded-full bg-traffic-red" />
           <span className="h-3 w-3 rounded-full bg-traffic-yellow" />
           <span className="h-3 w-3 rounded-full bg-traffic-green" />
         </div>
-        {!collapsed && (
-          <span className="ml-2 text-[13px] font-semibold tracking-tight text-foreground">
-            Curriculym
-          </span>
-        )}
+        {!collapsed ? (
+          <BrandMark href={null} size={22} variant="wordmark" className="ml-1 min-w-0" />
+        ) : null}
       </div>
 
       <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">

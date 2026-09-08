@@ -2,14 +2,19 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {
+  SignInButton,
+  SignUpButton,
+  Show,
+  UserButton,
+} from "@clerk/nextjs";
+import { BrandMark } from "@/components/brand-mark";
 
 export function LandingNav() {
   return (
     <header className="absolute inset-x-0 top-0 z-20">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 md:px-8">
-        <Link href="/" className="text-[17px] font-semibold tracking-tight text-[#1D1D1F]">
-          Curriculym
-        </Link>
+        <BrandMark size={28} variant="wordmark" priority />
         <nav className="flex items-center gap-2">
           <a
             href="#product"
@@ -23,18 +28,33 @@ export function LandingNav() {
           >
             Curricula
           </a>
-          <Link
-            href="/sign-in"
-            className="rounded-full px-3 py-1.5 text-[13px] font-medium text-[#1D1D1F] transition hover:bg-black/5"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/sign-up"
-            className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
-          >
-            Open school workspace
-          </Link>
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="rounded-full px-3 py-1.5 text-[13px] font-medium text-[#1D1D1F] transition hover:bg-black/5"
+              >
+                Sign in
+              </button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <button
+                type="button"
+                className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
+              >
+                Open school workspace
+              </button>
+            </SignUpButton>
+          </Show>
+          <Show when="signed-in">
+            <Link
+              href="/admin"
+              className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
+            >
+              Open workspace
+            </Link>
+            <UserButton />
+          </Show>
         </nav>
       </div>
     </header>

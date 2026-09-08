@@ -2,6 +2,7 @@ import Link from "next/link";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { LandingNav, ProductWindowPreview } from "@/components/landing/landing-chrome";
+import { BrandMark } from "@/components/brand-mark";
 import { roleFromMetadata, roleHomePath } from "@/lib/clerk-roles";
 
 export default async function LandingPage() {
@@ -26,10 +27,14 @@ export default async function LandingPage() {
         />
         <div className="relative mx-auto max-w-6xl">
           <div className="mx-auto max-w-2xl text-center">
-            <p className="text-[15px] font-semibold tracking-tight text-[#007AFF] md:text-[17px]">
-              Curriculym
-            </p>
-            <h1 className="mt-3 text-[40px] font-semibold leading-[1.05] tracking-tight md:text-[56px]">
+            <BrandMark
+              href={null}
+              size={56}
+              variant="wordmark"
+              priority
+              className="mx-auto"
+            />
+            <h1 className="mt-6 text-[34px] font-semibold leading-[1.05] tracking-tight text-[#1D1D1F] md:text-[48px]">
               One school system.
               <br />
               Every curriculum.
@@ -161,7 +166,9 @@ export default async function LandingPage() {
 
       <footer className="border-t border-black/5 px-5 py-8 md:px-8">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 text-[13px] text-[#6E6E73]">
-          <p className="font-medium text-[#1D1D1F]">Curriculym</p>
+          <div className="flex items-center gap-2 font-medium text-[#1D1D1F]">
+            <BrandMark href={null} size={22} variant="wordmark" />
+          </div>
           <p>Multi-tenant school management · Secured with Clerk</p>
         </div>
       </footer>

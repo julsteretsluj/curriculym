@@ -1,4 +1,5 @@
 import { ClerkProvider } from "@clerk/nextjs";
+import { shadcn } from "@clerk/ui/themes";
 import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
@@ -10,15 +11,19 @@ export const metadata: Metadata = {
   },
   description:
     "All-in-one multi-tenant school management — IB, AP, IGCSE, A Level, and more in a macOS workspace.",
+  icons: {
+    icon: "/curriculym-logo.png",
+    apple: "/curriculym-logo.png",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" suppressHydrationWarning className="h-full">
       <body className="min-h-full font-sans antialiased">
-        <ClerkProvider>
+        <ClerkProvider appearance={{ theme: shadcn }}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
+            {children}
           </ThemeProvider>
         </ClerkProvider>
       </body>
