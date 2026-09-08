@@ -47,9 +47,9 @@ export default function AdminOverviewPage() {
       <div className="grid gap-4 md:grid-cols-2">
         {[
           {
-            href: "/admin/school",
-            title: "Multi-curriculum setup",
-            desc: "IB, Cambridge, AP, and national pathways.",
+            href: "/admin/courses",
+            title: "Multi-curriculum courses",
+            desc: "PYP, MYP, DP, CP, AP, A Level, IGCSE, GCSE catalogs.",
             icon: Building2,
           },
           {

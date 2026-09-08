@@ -3,9 +3,12 @@ import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Curriculym — School Management",
+  title: {
+    default: "Curriculym",
+    template: "%s · Curriculym",
+  },
   description:
-    "All-in-one multi-tenant school management system with a macOS desktop experience.",
+    "All-in-one multi-tenant school management — IB, AP, IGCSE, A Level, and more in a macOS workspace.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

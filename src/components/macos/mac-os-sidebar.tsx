@@ -67,6 +67,7 @@ interface NavDef {
 const NAV: NavDef[] = [
   { href: "/admin", label: "Overview", icon: "dashboard", roles: ["admin"] },
   { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
+  { href: "/admin/courses", label: "Course Catalog", icon: "classes", roles: ["admin"] },
   { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
   { href: "/admin/newsletters", label: "Newsletters", icon: "news", roles: ["admin"] },
   {
@@ -78,6 +79,7 @@ const NAV: NavDef[] = [
   },
   { href: "/staff", label: "Overview", icon: "dashboard", roles: ["staff"] },
   { href: "/staff/classes", label: "Classes", icon: "classes", roles: ["staff"] },
+  { href: "/staff/courses", label: "Courses", icon: "gradebook", roles: ["staff"] },
   { href: "/staff/timetable", label: "Timetable", icon: "timetable", roles: ["staff"] },
   { href: "/staff/gradebook", label: "Gradebook", icon: "gradebook", roles: ["staff"] },
   { href: "/staff/meetings", label: "Parent Meetings", icon: "meetings", roles: ["staff"] },

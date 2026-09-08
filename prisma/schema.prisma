@@ -36,6 +36,7 @@ model Tenant {
   extracurriculars  Extracurricular[]
   chatChannels      ChatChannel[]
   notifications     Notification[]
+  tenantCourses     TenantCourse[]
 
   @@map("tenants")
 }
@@ -44,8 +45,14 @@ enum Curriculum {
   IB_PYP
   IB_MYP
   IB_DP
-  CAMBRIDGE
+  IB_CP
   AP
+  A_LEVEL
+  AS_LEVEL
+  IGCSE
+  GCSE
+  CAMBRIDGE_PRIMARY
+  CAMBRIDGE_LOWER_SECONDARY
   NATIONAL
   EARLY_YEARS
 }
@@ -139,17 +146,56 @@ model ParentChild {
 
 // ─── Academic ────────────────────────────────────────────────────────────────
 
+/// Global reference catalog of courses/subjects per curriculum (seeded from app data).
+model CatalogCourse {
+  id          String     @id
+  curriculum  Curriculum
+  code        String
+  name        String
+  groupName   String?
+  levels      String[]
+  description String?
+  ages        String?
+  grades      String?
+  sortOrder   Int        @default(0)
+
+  tenantCourses TenantCourse[]
+  classes       Class[]
+
+  @@unique([curriculum, code])
+  @@index([curriculum])
+  @@map("catalog_courses")
+}
+
+/// Per-tenant enablement of catalog courses (schools pick what they offer).
+model TenantCourse {
+  id              String        @id @default(cuid())
+  tenantId        String
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  catalogCourseId String
+  catalogCourse   CatalogCourse @relation(fields: [catalogCourseId], references: [id], onDelete: Cascade)
+  enabled         Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([tenantId, catalogCourseId])
+  @@index([tenantId, enabled])
+  @@map("tenant_courses")
+}
+
 model Class {
-  id         String   @id @default(cuid())
-  tenantId   String
-  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  name       String
-  code       String
-  curriculum Curriculum
-  gradeLevel String
-  year       String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id              String         @id @default(cuid())
+  tenantId        String
+  tenant          Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  name            String
+  code            String
+  curriculum      Curriculum
+  catalogCourseId String?
+  catalogCourse   CatalogCourse? @relation(fields: [catalogCourseId], references: [id], onDelete: SetNull)
+  gradeLevel      String
+  year            String
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   teachers    ClassTeacher[]
   enrollments ClassEnrollment[]
@@ -159,6 +205,7 @@ model Class {
 
   @@unique([tenantId, code, year])
   @@index([tenantId])
+  @@index([catalogCourseId])
   @@map("classes")
 }
 

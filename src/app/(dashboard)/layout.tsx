@@ -1,11 +1,16 @@
-"use client";
+import { redirect } from "next/navigation";
+import { DashboardShell } from "@/components/macos/dashboard-shell";
+import { getSession } from "@/lib/session";
 
-import { MacOsWindowFrame } from "@/components/macos/mac-os-window-frame";
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <MacOsWindowFrame>{children}</MacOsWindowFrame>;
+  const session = await getSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  return <DashboardShell role={session.role}>{children}</DashboardShell>;
 }

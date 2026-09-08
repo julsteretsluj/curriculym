@@ -16,9 +16,10 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — redirects to the Admin dashboard inside the macOS window shell.
+Open [http://localhost:3000](http://localhost:3000) for the public landing page. The school workspace requires sign-in at `/login`.
 
-Use the top-bar segmented control to switch **Admin / Staff / Student / Parent / CPO**. On Student, toggle **Early Years** vs **G3–12**.
+**Demo password:** `curriculym`  
+Accounts: `admin@harbor.edu`, `staff@harbor.edu`, `student@harbor.edu`, `parent@harbor.edu`, `cpo@harbor.edu`
 
 ### Database (optional for UI demo)
 
@@ -39,7 +40,23 @@ npm run db:push
 | Parent | `/parent/*` |
 | Support / CPO | `/support/*` |
 
-## Security notes
+## Course catalog
+
+Curriculym ships a built-in catalog of **300+ courses** across:
+
+- IB PYP, MYP, DP, CP
+- College Board AP
+- Cambridge Primary, Lower Secondary, IGCSE, AS & A Level
+- UK GCSE
+- Early Years & National placeholders
+
+Browse and enable offerings at `/admin/courses`. Persist to Postgres with:
+
+```bash
+npm run db:push
+npm run db:seed:catalog
+```
+
 
 - Every Prisma model that holds school data includes `tenantId` — use `tenantWhere()` from `src/lib/prisma.ts`.
 - Safeguarding UI and helpers restrict access to admin/CPO (`canAccessSafeguarding`). Do not expose `SafeguardingLog` payloads to students, parents, or standard teachers.
