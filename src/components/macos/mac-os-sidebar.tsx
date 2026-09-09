@@ -99,6 +99,7 @@ const NAV: NavDef[] = [
   // Staff
   { href: "/staff", label: "Overview", icon: "dashboard", roles: ["staff"] },
   { href: "/staff/classes", label: "Classes", icon: "classes", roles: ["staff"] },
+  { href: "/staff/directory", label: "Directory", icon: "directory", roles: ["staff"] },
   { href: "/staff/timetable", label: "Schedules", icon: "timetable", roles: ["staff"] },
   { href: "/staff/assignments", label: "Homework", icon: "assignments", roles: ["staff"] },
   { href: "/staff/gradebook", label: "Grades", icon: "gradebook", roles: ["staff"] },

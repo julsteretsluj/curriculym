@@ -4,15 +4,15 @@ import { useEffect } from "react";
 import { useAppStore } from "@/stores/app-store";
 import { SchoolDirectory } from "@/components/modules/school-directory";
 
-export default function SupportDirectoryPage() {
+export default function StaffDirectoryPage() {
   const setRole = useAppStore((s) => s.setRole);
-  useEffect(() => setRole("support"), [setRole]);
+  useEffect(() => setRole("staff"), [setRole]);
   return (
     <SchoolDirectory
-      title="Student directory"
-      description="Pastoral follow-up across the enrolled student body."
+      title="Directory"
+      description="Students and colleagues for your teaching day."
       defaultTab="students"
-      tabs={["students", "parents"]}
+      tabs={["students", "teachers"]}
     />
   );
 }

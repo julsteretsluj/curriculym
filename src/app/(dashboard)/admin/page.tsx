@@ -11,11 +11,24 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppStore } from "@/stores/app-store";
 import { useEffect } from "react";
+import { SCHOOL_POPULATION } from "@/lib/school-population";
 
 const STATS = [
-  { label: "Active students", value: "1,284", hint: "+18 this term" },
-  { label: "Staff accounts", value: "142", hint: "12 departments" },
-  { label: "Open rooms today", value: "27", hint: "3 conflicts" },
+  {
+    label: "Active students",
+    value: SCHOOL_POPULATION.students.toLocaleString(),
+    hint: "EY–G12 enrolled",
+  },
+  {
+    label: "Teachers",
+    value: SCHOOL_POPULATION.teachers.toLocaleString(),
+    hint: "12 departments",
+  },
+  {
+    label: "Parents / guardians",
+    value: SCHOOL_POPULATION.parents.toLocaleString(),
+    hint: "Linked family contacts",
+  },
   { label: "Unread chats", value: "56", hint: "Across campuses" },
 ];
 
@@ -55,7 +68,7 @@ export default function AdminOverviewPage() {
           {
             href: "/admin/directory",
             title: "Role access matrix",
-            desc: "Directory, permissions, and profile pills.",
+            desc: "1,284 students · 142 teachers · 968 parents.",
             icon: Users,
           },
           {
