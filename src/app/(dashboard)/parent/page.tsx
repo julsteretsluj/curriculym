@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppStore } from "@/stores/app-store";
 import { useEffect } from "react";
+import { AvatarBubble } from "@/components/ui/avatar-emoji";
 
 const CHILDREN = [
   { name: "Aria Patel", grade: "G8", status: "On track" },
@@ -27,12 +28,7 @@ export default function ParentHubPage() {
           <Card key={c.name}>
             <CardHeader>
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
-                  {c.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </div>
+                <AvatarBubble seed={c.name} size={44} title={c.name} />
                 <div>
                   <CardTitle>{c.name}</CardTitle>
                   <CardDescription>

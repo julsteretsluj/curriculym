@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useAppStore } from "@/stores/app-store";
 import { useShallow } from "zustand/react/shallow";
+import { AvatarBubble } from "@/components/ui/avatar-emoji";
 
 export function ProfilePanel() {
   const user = useAppStore(
@@ -16,7 +17,7 @@ export function ProfilePanel() {
         title: u.title,
         role: u.role,
         schoolName: u.schoolName,
-        avatarInitials: u.avatarInitials,
+        id: u.id,
       };
     })
   );
@@ -30,9 +31,7 @@ export function ProfilePanel() {
 
       <Card>
         <CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
-            {user.avatarInitials}
-          </div>
+          <AvatarBubble seed={user.email || user.id || user.name} size={64} title={user.name} />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <h2 className="text-xl font-semibold tracking-tight">{user.name}</h2>

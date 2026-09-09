@@ -42,6 +42,7 @@ import { useShallow } from "zustand/react/shallow";
 import type { AppRole } from "@/lib/demo-data";
 import { BrandMark } from "@/components/brand-mark";
 import { roleHomePath } from "@/lib/clerk-roles";
+import { AvatarBubble } from "@/components/ui/avatar-emoji";
 
 type IconKey =
   | "dashboard"
@@ -229,7 +230,8 @@ export function MacOsSidebar() {
       return {
         name: u.name,
         title: u.title,
-        avatarInitials: u.avatarInitials,
+        email: u.email,
+        id: u.id,
       };
     })
   );
@@ -336,9 +338,7 @@ export function MacOsSidebar() {
             collapsed && "justify-center"
           )}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
-            {user.avatarInitials}
-          </div>
+          <AvatarBubble seed={user.email || user.id || user.name} size={collapsed ? 32 : 32} />
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate text-[12px] font-semibold leading-tight">

@@ -13,6 +13,7 @@ import {
   type DemoStudent,
   type DemoTeacher,
 } from "@/lib/school-population";
+import { AvatarBubble } from "@/components/ui/avatar-emoji";
 
 type Tab = "students" | "teachers" | "parents";
 
@@ -160,7 +161,7 @@ export function SchoolDirectory({
             <Card key={s.id}>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <Avatar initials={s.avatarInitials} />
+                  <AvatarBubble seed={s.id} size={40} title={s.name} />
                   <div className="min-w-0">
                     <CardTitle className="truncate text-[15px]">{s.name}</CardTitle>
                     <CardDescription>
@@ -183,7 +184,7 @@ export function SchoolDirectory({
             <Card key={t.id}>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <Avatar initials={t.avatarInitials} />
+                  <AvatarBubble seed={t.id} size={40} title={t.name} />
                   <div className="min-w-0">
                     <CardTitle className="truncate text-[15px]">{t.name}</CardTitle>
                     <CardDescription className="truncate">{t.title}</CardDescription>
@@ -201,7 +202,7 @@ export function SchoolDirectory({
             <Card key={p.id}>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <Avatar initials={p.avatarInitials} />
+                  <AvatarBubble seed={p.id} size={40} title={p.name} />
                   <div className="min-w-0">
                     <CardTitle className="truncate text-[15px]">{p.name}</CardTitle>
                     <CardDescription className="truncate">{p.email}</CardDescription>
@@ -221,10 +222,3 @@ export function SchoolDirectory({
   );
 }
 
-function Avatar({ initials }: { initials: string }) {
-  return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
-      {initials}
-    </div>
-  );
-}
