@@ -29,22 +29,18 @@ export function LandingNav() {
             Curricula
           </a>
           <Show when="signed-out">
-            <SignInButton mode="modal">
-              <button
-                type="button"
-                className="rounded-full px-3 py-1.5 text-[13px] font-medium text-[#1D1D1F] transition hover:bg-black/5"
-              >
-                Sign in
-              </button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button
-                type="button"
-                className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
-              >
-                Open school workspace
-              </button>
-            </SignUpButton>
+            <Link
+              href="/sign-in"
+              className="rounded-full px-3 py-1.5 text-[13px] font-medium text-[#1D1D1F] transition hover:bg-black/5"
+            >
+              Sign in
+            </Link>
+            <Link
+              href="/sign-up"
+              className="rounded-full bg-[#007AFF] px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-[#0077ED]"
+            >
+              Open school workspace
+            </Link>
           </Show>
           <Show when="signed-in">
             <Link
