@@ -2,12 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  SignInButton,
-  SignUpButton,
-  Show,
-  UserButton,
-} from "@clerk/nextjs";
+import { Show, UserButton } from "@clerk/nextjs";
 import { BrandMark } from "@/components/brand-mark";
 
 export function LandingNav() {
