@@ -9,19 +9,19 @@ import { useAppStore } from "@/stores/app-store";
 import { populationStats, SCHOOL_POPULATION } from "@/lib/school-population";
 
 const FEATURES: { name: string; href: string; check: () => string }[] = [
-  { name: "Classes", href: "/admin/classes", check: () => "Roster + real form sizes" },
-  { name: "Schedules", href: "/staff/timetable", check: () => "Period grid" },
-  { name: "ECAs", href: "/admin/ecas", check: () => "Join / leave + notifications" },
-  { name: "Online library", href: "/admin/library", check: () => "Search + borrow" },
-  { name: "Chat", href: "/admin/chat", check: () => "Channels + send message" },
-  { name: "Daily news", href: "/admin/news", check: () => "Campus feed" },
-  { name: "Notifications", href: "/admin/notifications", check: () => "Inbox + dismiss" },
-  { name: "Profile", href: "/admin/profile", check: () => "Clerk-linked identity" },
-  { name: "Homework", href: "/staff/assignments", check: () => "Due list + upload" },
-  { name: "Grades", href: "/student/grades", check: () => "MYP criteria from roster" },
-  { name: "Room booking", href: "/admin/rooms", check: () => "Timeline + reserve" },
-  { name: "Meeting booking", href: "/admin/meetings", check: () => "Slot publish / book" },
-  { name: "Directory", href: "/admin/directory", check: () => "1,284 / 142 / 968 records" },
+  { name: "Platform coverage", href: "/admin/coverage", check: () => "iSAMS · ManageBac · SOCS · Classroom" },
+  { name: "Admissions", href: "/admin/admissions", check: () => "Enquiry → offer pipeline" },
+  { name: "Attendance", href: "/staff/attendance", check: () => "Homeroom register" },
+  { name: "Classroom", href: "/staff/classroom", check: () => "Stream + classwork" },
+  { name: "IB Core", href: "/student/ib-core", check: () => "CAS · EE · TOK" },
+  { name: "Fixtures / SOCS", href: "/staff/fixtures", check: () => "Teams + fixtures" },
+  { name: "Fees", href: "/admin/fees", check: () => "Tuition ledger" },
+  { name: "Pastoral", href: "/staff/pastoral", check: () => "Medical + merits" },
+  { name: "Cover", href: "/staff/cover", check: () => "Staff absence gaps" },
+  { name: "Trips", href: "/admin/trips", check: () => "Digital consent" },
+  { name: "Quizzes", href: "/student/quizzes", check: () => "Formative checks" },
+  { name: "Report cards", href: "/admin/reports", check: () => "Term publish cycle" },
+  { name: "Directory", href: "/admin/directory", check: () => "1,284 / 142 / 968" },
   { name: "Course catalog", href: "/admin/courses", check: () => "351 pathways" },
 ];
 
@@ -47,7 +47,7 @@ export default function AdminHealthPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Feature check</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Quick status for Harbor modules — open each link and click through once.
+            Smoke links for the all-in-one school platform.
           </p>
         </div>
         <button
@@ -66,21 +66,9 @@ export default function AdminHealthPage() {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-3">
-        <Stat
-          label="Students"
-          value={stats.students}
-          ok={stats.students === SCHOOL_POPULATION.students}
-        />
-        <Stat
-          label="Teachers"
-          value={stats.teachers}
-          ok={stats.teachers === SCHOOL_POPULATION.teachers}
-        />
-        <Stat
-          label="Parents"
-          value={stats.parents}
-          ok={stats.parents === SCHOOL_POPULATION.parents}
-        />
+        <Stat label="Students" value={stats.students} ok={stats.students === SCHOOL_POPULATION.students} />
+        <Stat label="Teachers" value={stats.teachers} ok={stats.teachers === SCHOOL_POPULATION.teachers} />
+        <Stat label="Parents" value={stats.parents} ok={stats.parents === SCHOOL_POPULATION.parents} />
       </div>
 
       <Card>
@@ -94,7 +82,7 @@ export default function AdminHealthPage() {
             Runtime checks
           </CardTitle>
           <CardDescription>
-            Client hydrated · population seeded · {FEATURES.length} feature routes linked
+            Client hydrated · {FEATURES.length} competitor-replacement routes linked
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">

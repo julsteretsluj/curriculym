@@ -4,20 +4,30 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
+  Activity,
+  Banknote,
   Bell,
   BookMarked,
   BookOpen,
+  Bus,
   CalendarClock,
   CalendarDays,
+  ClipboardCheck,
   ClipboardList,
   DoorOpen,
+  FileSpreadsheet,
   GraduationCap,
+  HeartPulse,
   LayoutDashboard,
+  Map,
   MessageSquare,
+  MonitorPlay,
   Newspaper,
   School,
   ShieldAlert,
+  Stethoscope,
   Trophy,
+  UserPlus,
   UserRound,
   Users,
   ChevronLeft,
@@ -49,7 +59,19 @@ type IconKey =
   | "ecas"
   | "library"
   | "notifications"
-  | "profile";
+  | "profile"
+  | "attendance"
+  | "admissions"
+  | "fees"
+  | "pastoral"
+  | "cover"
+  | "reports"
+  | "trips"
+  | "fixtures"
+  | "classroom"
+  | "ib"
+  | "coverage"
+  | "quizzes";
 
 const ICONS: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   dashboard: LayoutDashboard,
@@ -68,6 +90,18 @@ const ICONS: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   library: BookMarked,
   notifications: Bell,
   profile: UserRound,
+  attendance: ClipboardCheck,
+  admissions: UserPlus,
+  fees: Banknote,
+  pastoral: HeartPulse,
+  cover: Stethoscope,
+  reports: FileSpreadsheet,
+  trips: Bus,
+  fixtures: Activity,
+  classroom: MonitorPlay,
+  ib: GraduationCap,
+  coverage: Map,
+  quizzes: ClipboardCheck,
 };
 
 interface NavDef {
@@ -81,46 +115,72 @@ interface NavDef {
 const NAV: NavDef[] = [
   // Admin
   { href: "/admin", label: "Overview", icon: "dashboard", roles: ["admin"] },
+  { href: "/admin/coverage", label: "Platform coverage", icon: "coverage", roles: ["admin"] },
   { href: "/admin/health", label: "Feature check", icon: "dashboard", roles: ["admin"] },
+  { href: "/admin/admissions", label: "Admissions", icon: "admissions", roles: ["admin"] },
+  { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
+  { href: "/admin/attendance", label: "Attendance", icon: "attendance", roles: ["admin"] },
   { href: "/admin/classes", label: "Classes", icon: "classes", roles: ["admin"] },
   { href: "/admin/courses", label: "Course Catalog", icon: "gradebook", roles: ["admin"] },
+  { href: "/admin/classroom", label: "Classroom", icon: "classroom", roles: ["admin"] },
+  { href: "/admin/ib-core", label: "IB Core", icon: "ib", roles: ["admin"] },
+  { href: "/admin/fees", label: "Fees & billing", icon: "fees", roles: ["admin"] },
+  { href: "/admin/pastoral", label: "Pastoral & medical", icon: "pastoral", roles: ["admin"] },
+  { href: "/admin/cover", label: "Cover", icon: "cover", roles: ["admin"] },
+  { href: "/admin/reports", label: "Report cards", icon: "reports", roles: ["admin"] },
   { href: "/admin/ecas", label: "ECAs", icon: "ecas", roles: ["admin"] },
+  { href: "/admin/fixtures", label: "Fixtures / SOCS", icon: "fixtures", roles: ["admin"] },
+  { href: "/admin/trips", label: "Trips & consent", icon: "trips", roles: ["admin"] },
   { href: "/admin/library", label: "Online Library", icon: "library", roles: ["admin"] },
   { href: "/admin/chat", label: "Chat", icon: "chat", roles: ["admin"] },
   { href: "/admin/news", label: "Daily News", icon: "news", roles: ["admin"] },
   { href: "/admin/newsletters", label: "Newsletters", icon: "news", roles: ["admin"] },
   { href: "/admin/meetings", label: "Meeting Booking", icon: "meetings", roles: ["admin"] },
   { href: "/admin/rooms", label: "Room Booking", icon: "rooms", roles: ["admin"] },
-  { href: "/admin/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["admin"] },
-  { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
-  { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
   { href: "/admin/safeguarding", label: "Safeguarding", icon: "safeguarding", badge: 2, roles: ["admin"] },
+  { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
+  { href: "/admin/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["admin"] },
   { href: "/admin/profile", label: "Profile", icon: "profile", roles: ["admin"] },
 
   // Staff
   { href: "/staff", label: "Overview", icon: "dashboard", roles: ["staff"] },
+  { href: "/staff/attendance", label: "Attendance", icon: "attendance", roles: ["staff"] },
   { href: "/staff/classes", label: "Classes", icon: "classes", roles: ["staff"] },
-  { href: "/staff/directory", label: "Directory", icon: "directory", roles: ["staff"] },
+  { href: "/staff/classroom", label: "Classroom", icon: "classroom", roles: ["staff"] },
   { href: "/staff/timetable", label: "Schedules", icon: "timetable", roles: ["staff"] },
   { href: "/staff/assignments", label: "Homework", icon: "assignments", roles: ["staff"] },
+  { href: "/staff/quizzes", label: "Quizzes", icon: "quizzes", roles: ["staff"] },
   { href: "/staff/gradebook", label: "Grades", icon: "gradebook", roles: ["staff"] },
+  { href: "/staff/ib-core", label: "IB Core", icon: "ib", roles: ["staff"] },
+  { href: "/staff/reports", label: "Report cards", icon: "reports", roles: ["staff"] },
+  { href: "/staff/pastoral", label: "Pastoral", icon: "pastoral", roles: ["staff"] },
+  { href: "/staff/cover", label: "Cover", icon: "cover", roles: ["staff"] },
   { href: "/staff/ecas", label: "ECAs", icon: "ecas", roles: ["staff"] },
+  { href: "/staff/fixtures", label: "Fixtures / SOCS", icon: "fixtures", roles: ["staff"] },
+  { href: "/staff/trips", label: "Trips", icon: "trips", roles: ["staff"] },
   { href: "/staff/library", label: "Online Library", icon: "library", roles: ["staff"] },
   { href: "/staff/chat", label: "Chat", icon: "chat", roles: ["staff"] },
   { href: "/staff/news", label: "Daily News", icon: "news", roles: ["staff"] },
   { href: "/staff/meetings", label: "Meeting Booking", icon: "meetings", roles: ["staff"] },
   { href: "/staff/rooms", label: "Room Booking", icon: "rooms", roles: ["staff"] },
-  { href: "/staff/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["staff"] },
+  { href: "/staff/directory", label: "Directory", icon: "directory", roles: ["staff"] },
   { href: "/staff/courses", label: "Courses", icon: "classes", roles: ["staff"] },
+  { href: "/staff/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["staff"] },
   { href: "/staff/profile", label: "Profile", icon: "profile", roles: ["staff"] },
 
   // Student
   { href: "/student", label: "Home", icon: "dashboard", roles: ["student"] },
+  { href: "/student/classroom", label: "Classroom", icon: "classroom", roles: ["student"] },
   { href: "/student/classes", label: "Classes", icon: "classes", roles: ["student"] },
   { href: "/student/timetable", label: "Schedules", icon: "timetable", roles: ["student"] },
+  { href: "/student/attendance", label: "Attendance", icon: "attendance", roles: ["student"] },
   { href: "/student/assignments", label: "Homework", icon: "assignments", badge: 3, roles: ["student"] },
+  { href: "/student/quizzes", label: "Quizzes", icon: "quizzes", roles: ["student"] },
   { href: "/student/grades", label: "Grades", icon: "gradebook", roles: ["student"] },
+  { href: "/student/ib-core", label: "IB Core", icon: "ib", roles: ["student"] },
   { href: "/student/ecas", label: "ECAs", icon: "ecas", roles: ["student"] },
+  { href: "/student/fixtures", label: "Fixtures", icon: "fixtures", roles: ["student"] },
+  { href: "/student/trips", label: "Trips", icon: "trips", roles: ["student"] },
   { href: "/student/library", label: "Online Library", icon: "library", roles: ["student"] },
   { href: "/student/chat", label: "Chat", icon: "chat", badge: 5, roles: ["student"] },
   { href: "/student/news", label: "Daily News", icon: "news", roles: ["student"] },
@@ -130,21 +190,30 @@ const NAV: NavDef[] = [
   // Parent
   { href: "/parent", label: "Family Hub", icon: "dashboard", roles: ["parent"] },
   { href: "/parent/classes", label: "Classes", icon: "classes", roles: ["parent"] },
+  { href: "/parent/classroom", label: "Classroom", icon: "classroom", roles: ["parent"] },
   { href: "/parent/timetable", label: "Schedules", icon: "timetable", roles: ["parent"] },
+  { href: "/parent/attendance", label: "Attendance", icon: "attendance", roles: ["parent"] },
   { href: "/parent/homework", label: "Homework", icon: "assignments", roles: ["parent"] },
   { href: "/parent/grades", label: "Grades", icon: "gradebook", roles: ["parent"] },
+  { href: "/parent/report-cards", label: "Report cards", icon: "reports", roles: ["parent"] },
+  { href: "/parent/fees", label: "Fees", icon: "fees", roles: ["parent"] },
   { href: "/parent/ecas", label: "ECAs", icon: "ecas", roles: ["parent"] },
+  { href: "/parent/fixtures", label: "Fixtures", icon: "fixtures", roles: ["parent"] },
+  { href: "/parent/trips", label: "Trips & consent", icon: "trips", roles: ["parent"] },
   { href: "/parent/library", label: "Online Library", icon: "library", roles: ["parent"] },
   { href: "/parent/chat", label: "Chat", icon: "chat", roles: ["parent"] },
   { href: "/parent/news", label: "Daily News", icon: "news", roles: ["parent"] },
   { href: "/parent/meetings", label: "Meeting Booking", icon: "meetings", roles: ["parent"] },
   { href: "/parent/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["parent"] },
-  { href: "/parent/reports", label: "Reports", icon: "gradebook", roles: ["parent"] },
+  { href: "/parent/reports", label: "Legacy reports", icon: "gradebook", roles: ["parent"] },
   { href: "/parent/profile", label: "Profile", icon: "profile", roles: ["parent"] },
 
   // Support / CPO
   { href: "/support", label: "Safeguarding Desk", icon: "safeguarding", badge: 2, roles: ["support"] },
+  { href: "/support/pastoral", label: "Pastoral & medical", icon: "pastoral", roles: ["support"] },
+  { href: "/support/attendance", label: "Attendance", icon: "attendance", roles: ["support"] },
   { href: "/support/directory", label: "Student Directory", icon: "directory", roles: ["support"] },
+  { href: "/support/trips", label: "Trips", icon: "trips", roles: ["support"] },
   { href: "/support/rooms", label: "Room Booking", icon: "rooms", roles: ["support"] },
   { href: "/support/news", label: "Daily News", icon: "news", roles: ["support"] },
   { href: "/support/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["support"] },

@@ -60,6 +60,12 @@ export default function AdminOverviewPage() {
       <div className="grid gap-4 md:grid-cols-2">
         {[
           {
+            href: "/admin/coverage",
+            title: "Platform coverage",
+            desc: "Map of iSAMS, ManageBac, SOCS, and Classroom replacements.",
+            icon: Building2,
+          },
+          {
             href: "/admin/courses",
             title: "Multi-curriculum courses",
             desc: "PYP, MYP, DP, CP, AP, A Level, IGCSE, GCSE catalogs.",
@@ -67,7 +73,7 @@ export default function AdminOverviewPage() {
           },
           {
             href: "/admin/directory",
-            title: "Role access matrix",
+            title: "School directory",
             desc: "1,284 students · 142 teachers · 968 parents.",
             icon: Users,
           },
