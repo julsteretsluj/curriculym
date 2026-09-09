@@ -101,6 +101,7 @@ model User {
   newsAuthored        DailyNews[]
   notifications       Notification[]
   chatMemberships     ChatMember[]
+  chatMessages        ChatMessage[]
   children            ParentChild[]      @relation("ParentLink")
   parents             ParentChild[]      @relation("ChildLink")
 
@@ -479,6 +480,8 @@ model ChatChannel {
   tenantId  String
   tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   name      String
+  /// Class | Subject | ECA | Family | Staff
+  audience  String   @default("Class")
   isPrivate Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -506,6 +509,7 @@ model ChatMessage {
   channelId String
   channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   senderId  String
+  sender    User        @relation(fields: [senderId], references: [id], onDelete: Cascade)
   body      String
   createdAt DateTime    @default(now())
 
