@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
@@ -12,6 +13,7 @@ import {
   Bus,
   CalendarClock,
   CalendarDays,
+  ChevronDown,
   ClipboardCheck,
   ClipboardList,
   DoorOpen,
@@ -105,121 +107,301 @@ const ICONS: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   quizzes: ClipboardCheck,
 };
 
-interface NavDef {
+interface NavItem {
   href: string;
   label: string;
   icon: IconKey;
   badge?: number;
-  roles: AppRole[];
 }
 
-const NAV: NavDef[] = [
-  // Admin
-  { href: "/admin", label: "Overview", icon: "dashboard", roles: ["admin"] },
-  { href: "/admin/coverage", label: "Platform coverage", icon: "coverage", roles: ["admin"] },
-  { href: "/admin/health", label: "Feature check", icon: "dashboard", roles: ["admin"] },
-  { href: "/admin/admissions", label: "Admissions", icon: "admissions", roles: ["admin"] },
-  { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
-  { href: "/admin/attendance", label: "Attendance", icon: "attendance", roles: ["admin"] },
-  { href: "/admin/classes", label: "Classes", icon: "classes", roles: ["admin"] },
-  { href: "/admin/courses", label: "Course Catalog", icon: "gradebook", roles: ["admin"] },
-  { href: "/admin/classroom", label: "Classroom", icon: "classroom", roles: ["admin"] },
-  { href: "/admin/ib-core", label: "IB Core", icon: "ib", roles: ["admin"] },
-  { href: "/admin/fees", label: "Fees & billing", icon: "fees", roles: ["admin"] },
-  { href: "/admin/pastoral", label: "Pastoral & medical", icon: "pastoral", roles: ["admin"] },
-  { href: "/admin/cover", label: "Cover", icon: "cover", roles: ["admin"] },
-  { href: "/admin/reports", label: "Report cards", icon: "reports", roles: ["admin"] },
-  { href: "/admin/ecas", label: "ECAs", icon: "ecas", roles: ["admin"] },
-  { href: "/admin/fixtures", label: "Fixtures", icon: "fixtures", roles: ["admin"] },
-  { href: "/admin/trips", label: "Trips & consent", icon: "trips", roles: ["admin"] },
-  { href: "/admin/library", label: "Online Library", icon: "library", roles: ["admin"] },
-  { href: "/admin/chat", label: "Chat", icon: "chat", roles: ["admin"] },
-  { href: "/admin/news", label: "Daily News", icon: "news", roles: ["admin"] },
-  { href: "/admin/newsletters", label: "Newsletters", icon: "news", roles: ["admin"] },
-  { href: "/admin/meetings", label: "Meeting Booking", icon: "meetings", roles: ["admin"] },
-  { href: "/admin/rooms", label: "Room Booking", icon: "rooms", roles: ["admin"] },
-  { href: "/admin/safeguarding", label: "Safeguarding", icon: "safeguarding", badge: 2, roles: ["admin"] },
-  { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
-  { href: "/admin/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["admin"] },
-  { href: "/admin/profile", label: "Profile", icon: "profile", roles: ["admin"] },
+interface NavGroup {
+  id: string;
+  label: string;
+  roles: AppRole[];
+  /** Flat item at top level (no accordion) when true and only one item with same label */
+  pin?: boolean;
+  items: NavItem[];
+}
 
-  // Staff
-  { href: "/staff", label: "Overview", icon: "dashboard", roles: ["staff"] },
-  { href: "/staff/attendance", label: "Attendance", icon: "attendance", roles: ["staff"] },
-  { href: "/staff/classes", label: "Classes", icon: "classes", roles: ["staff"] },
-  { href: "/staff/classroom", label: "Classroom", icon: "classroom", roles: ["staff"] },
-  { href: "/staff/timetable", label: "Schedules", icon: "timetable", roles: ["staff"] },
-  { href: "/staff/assignments", label: "Homework", icon: "assignments", roles: ["staff"] },
-  { href: "/staff/quizzes", label: "Quizzes", icon: "quizzes", roles: ["staff"] },
-  { href: "/staff/gradebook", label: "Grades", icon: "gradebook", roles: ["staff"] },
-  { href: "/staff/ib-core", label: "IB Core", icon: "ib", roles: ["staff"] },
-  { href: "/staff/reports", label: "Report cards", icon: "reports", roles: ["staff"] },
-  { href: "/staff/pastoral", label: "Pastoral", icon: "pastoral", roles: ["staff"] },
-  { href: "/staff/cover", label: "Cover", icon: "cover", roles: ["staff"] },
-  { href: "/staff/ecas", label: "ECAs", icon: "ecas", roles: ["staff"] },
-  { href: "/staff/fixtures", label: "Fixtures", icon: "fixtures", roles: ["staff"] },
-  { href: "/staff/trips", label: "Trips", icon: "trips", roles: ["staff"] },
-  { href: "/staff/library", label: "Online Library", icon: "library", roles: ["staff"] },
-  { href: "/staff/chat", label: "Chat", icon: "chat", roles: ["staff"] },
-  { href: "/staff/news", label: "Daily News", icon: "news", roles: ["staff"] },
-  { href: "/staff/meetings", label: "Meeting Booking", icon: "meetings", roles: ["staff"] },
-  { href: "/staff/rooms", label: "Room Booking", icon: "rooms", roles: ["staff"] },
-  { href: "/staff/directory", label: "Directory", icon: "directory", roles: ["staff"] },
-  { href: "/staff/courses", label: "Courses", icon: "classes", roles: ["staff"] },
-  { href: "/staff/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["staff"] },
-  { href: "/staff/profile", label: "Profile", icon: "profile", roles: ["staff"] },
+const NAV_GROUPS: NavGroup[] = [
+  // —— Admin ——
+  {
+    id: "admin-home",
+    label: "Home",
+    roles: ["admin"],
+    items: [
+      { href: "/admin", label: "Overview", icon: "dashboard" },
+      { href: "/admin/coverage", label: "Platform coverage", icon: "coverage" },
+      { href: "/admin/health", label: "Feature check", icon: "dashboard" },
+      { href: "/admin/school", label: "School Setup", icon: "school" },
+    ],
+  },
+  {
+    id: "admin-ops",
+    label: "School operations",
+    roles: ["admin"],
+    items: [
+      { href: "/admin/admissions", label: "Admissions", icon: "admissions" },
+      { href: "/admin/directory", label: "Directory", icon: "directory" },
+      { href: "/admin/attendance", label: "Attendance", icon: "attendance" },
+      { href: "/admin/fees", label: "Fees & billing", icon: "fees" },
+      { href: "/admin/pastoral", label: "Pastoral & medical", icon: "pastoral" },
+      { href: "/admin/cover", label: "Cover", icon: "cover" },
+      { href: "/admin/safeguarding", label: "Safeguarding", icon: "safeguarding", badge: 2 },
+    ],
+  },
+  {
+    id: "admin-learn",
+    label: "Teaching & learning",
+    roles: ["admin"],
+    items: [
+      { href: "/admin/classes", label: "Classes", icon: "classes" },
+      { href: "/admin/courses", label: "Course Catalog", icon: "gradebook" },
+      { href: "/admin/classroom", label: "Classroom", icon: "classroom" },
+      { href: "/admin/ib-core", label: "IB Core", icon: "ib" },
+      { href: "/admin/reports", label: "Report cards", icon: "reports" },
+      { href: "/admin/library", label: "Online Library", icon: "library" },
+    ],
+  },
+  {
+    id: "admin-activities",
+    label: "Activities",
+    roles: ["admin"],
+    items: [
+      { href: "/admin/ecas", label: "ECAs", icon: "ecas" },
+      { href: "/admin/fixtures", label: "Fixtures", icon: "fixtures" },
+      { href: "/admin/trips", label: "Trips & consent", icon: "trips" },
+      { href: "/admin/rooms", label: "Room Booking", icon: "rooms" },
+      { href: "/admin/meetings", label: "Meeting Booking", icon: "meetings" },
+    ],
+  },
+  {
+    id: "admin-comms",
+    label: "Communication",
+    roles: ["admin"],
+    items: [
+      { href: "/admin/chat", label: "Chat", icon: "chat" },
+      { href: "/admin/news", label: "Daily News", icon: "news" },
+      { href: "/admin/newsletters", label: "Newsletters", icon: "news" },
+      { href: "/admin/notifications", label: "Notifications", icon: "notifications", badge: 2 },
+    ],
+  },
+  {
+    id: "admin-account",
+    label: "Account",
+    roles: ["admin"],
+    items: [{ href: "/admin/profile", label: "Profile", icon: "profile" }],
+  },
 
-  // Student
-  { href: "/student", label: "Home", icon: "dashboard", roles: ["student"] },
-  { href: "/student/classroom", label: "Classroom", icon: "classroom", roles: ["student"] },
-  { href: "/student/classes", label: "Classes", icon: "classes", roles: ["student"] },
-  { href: "/student/timetable", label: "Schedules", icon: "timetable", roles: ["student"] },
-  { href: "/student/attendance", label: "Attendance", icon: "attendance", roles: ["student"] },
-  { href: "/student/assignments", label: "Homework", icon: "assignments", badge: 3, roles: ["student"] },
-  { href: "/student/quizzes", label: "Quizzes", icon: "quizzes", roles: ["student"] },
-  { href: "/student/grades", label: "Grades", icon: "gradebook", roles: ["student"] },
-  { href: "/student/ib-core", label: "IB Core", icon: "ib", roles: ["student"] },
-  { href: "/student/ecas", label: "ECAs", icon: "ecas", roles: ["student"] },
-  { href: "/student/fixtures", label: "Fixtures", icon: "fixtures", roles: ["student"] },
-  { href: "/student/trips", label: "Trips", icon: "trips", roles: ["student"] },
-  { href: "/student/library", label: "Online Library", icon: "library", roles: ["student"] },
-  { href: "/student/chat", label: "Chat", icon: "chat", badge: 5, roles: ["student"] },
-  { href: "/student/news", label: "Daily News", icon: "news", roles: ["student"] },
-  { href: "/student/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["student"] },
-  { href: "/student/profile", label: "Profile", icon: "profile", roles: ["student"] },
+  // —— Staff ——
+  {
+    id: "staff-home",
+    label: "Home",
+    roles: ["staff"],
+    items: [{ href: "/staff", label: "Overview", icon: "dashboard" }],
+  },
+  {
+    id: "staff-learn",
+    label: "Teaching & learning",
+    roles: ["staff"],
+    items: [
+      { href: "/staff/attendance", label: "Attendance", icon: "attendance" },
+      { href: "/staff/classes", label: "Classes", icon: "classes" },
+      { href: "/staff/classroom", label: "Classroom", icon: "classroom" },
+      { href: "/staff/timetable", label: "Schedules", icon: "timetable" },
+      { href: "/staff/assignments", label: "Homework", icon: "assignments" },
+      { href: "/staff/quizzes", label: "Quizzes", icon: "quizzes" },
+      { href: "/staff/gradebook", label: "Grades", icon: "gradebook" },
+      { href: "/staff/ib-core", label: "IB Core", icon: "ib" },
+      { href: "/staff/reports", label: "Report cards", icon: "reports" },
+      { href: "/staff/courses", label: "Courses", icon: "classes" },
+      { href: "/staff/library", label: "Online Library", icon: "library" },
+    ],
+  },
+  {
+    id: "staff-ops",
+    label: "School operations",
+    roles: ["staff"],
+    items: [
+      { href: "/staff/pastoral", label: "Pastoral", icon: "pastoral" },
+      { href: "/staff/cover", label: "Cover", icon: "cover" },
+      { href: "/staff/directory", label: "Directory", icon: "directory" },
+      { href: "/staff/rooms", label: "Room Booking", icon: "rooms" },
+      { href: "/staff/meetings", label: "Meeting Booking", icon: "meetings" },
+    ],
+  },
+  {
+    id: "staff-activities",
+    label: "Activities",
+    roles: ["staff"],
+    items: [
+      { href: "/staff/ecas", label: "ECAs", icon: "ecas" },
+      { href: "/staff/fixtures", label: "Fixtures", icon: "fixtures" },
+      { href: "/staff/trips", label: "Trips", icon: "trips" },
+    ],
+  },
+  {
+    id: "staff-comms",
+    label: "Communication",
+    roles: ["staff"],
+    items: [
+      { href: "/staff/chat", label: "Chat", icon: "chat" },
+      { href: "/staff/news", label: "Daily News", icon: "news" },
+      { href: "/staff/notifications", label: "Notifications", icon: "notifications", badge: 2 },
+    ],
+  },
+  {
+    id: "staff-account",
+    label: "Account",
+    roles: ["staff"],
+    items: [{ href: "/staff/profile", label: "Profile", icon: "profile" }],
+  },
 
-  // Parent
-  { href: "/parent", label: "Family Hub", icon: "dashboard", roles: ["parent"] },
-  { href: "/parent/classes", label: "Classes", icon: "classes", roles: ["parent"] },
-  { href: "/parent/classroom", label: "Classroom", icon: "classroom", roles: ["parent"] },
-  { href: "/parent/timetable", label: "Schedules", icon: "timetable", roles: ["parent"] },
-  { href: "/parent/attendance", label: "Attendance", icon: "attendance", roles: ["parent"] },
-  { href: "/parent/homework", label: "Homework", icon: "assignments", roles: ["parent"] },
-  { href: "/parent/grades", label: "Grades", icon: "gradebook", roles: ["parent"] },
-  { href: "/parent/report-cards", label: "Report cards", icon: "reports", roles: ["parent"] },
-  { href: "/parent/fees", label: "Fees", icon: "fees", roles: ["parent"] },
-  { href: "/parent/ecas", label: "ECAs", icon: "ecas", roles: ["parent"] },
-  { href: "/parent/fixtures", label: "Fixtures", icon: "fixtures", roles: ["parent"] },
-  { href: "/parent/trips", label: "Trips & consent", icon: "trips", roles: ["parent"] },
-  { href: "/parent/library", label: "Online Library", icon: "library", roles: ["parent"] },
-  { href: "/parent/chat", label: "Chat", icon: "chat", roles: ["parent"] },
-  { href: "/parent/news", label: "Daily News", icon: "news", roles: ["parent"] },
-  { href: "/parent/meetings", label: "Meeting Booking", icon: "meetings", roles: ["parent"] },
-  { href: "/parent/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["parent"] },
-  { href: "/parent/reports", label: "Legacy reports", icon: "gradebook", roles: ["parent"] },
-  { href: "/parent/profile", label: "Profile", icon: "profile", roles: ["parent"] },
+  // —— Student ——
+  {
+    id: "student-home",
+    label: "Home",
+    roles: ["student"],
+    items: [{ href: "/student", label: "Home", icon: "dashboard" }],
+  },
+  {
+    id: "student-learn",
+    label: "My learning",
+    roles: ["student"],
+    items: [
+      { href: "/student/classroom", label: "Classroom", icon: "classroom" },
+      { href: "/student/classes", label: "Classes", icon: "classes" },
+      { href: "/student/timetable", label: "Schedules", icon: "timetable" },
+      { href: "/student/attendance", label: "Attendance", icon: "attendance" },
+      { href: "/student/assignments", label: "Homework", icon: "assignments", badge: 3 },
+      { href: "/student/quizzes", label: "Quizzes", icon: "quizzes" },
+      { href: "/student/grades", label: "Grades", icon: "gradebook" },
+      { href: "/student/ib-core", label: "IB Core", icon: "ib" },
+      { href: "/student/library", label: "Online Library", icon: "library" },
+    ],
+  },
+  {
+    id: "student-activities",
+    label: "Activities",
+    roles: ["student"],
+    items: [
+      { href: "/student/ecas", label: "ECAs", icon: "ecas" },
+      { href: "/student/fixtures", label: "Fixtures", icon: "fixtures" },
+      { href: "/student/trips", label: "Trips", icon: "trips" },
+    ],
+  },
+  {
+    id: "student-comms",
+    label: "Communication",
+    roles: ["student"],
+    items: [
+      { href: "/student/chat", label: "Chat", icon: "chat", badge: 5 },
+      { href: "/student/news", label: "Daily News", icon: "news" },
+      { href: "/student/notifications", label: "Notifications", icon: "notifications", badge: 2 },
+    ],
+  },
+  {
+    id: "student-account",
+    label: "Account",
+    roles: ["student"],
+    items: [{ href: "/student/profile", label: "Profile", icon: "profile" }],
+  },
 
-  // Support / CPO
-  { href: "/support", label: "Safeguarding Desk", icon: "safeguarding", badge: 2, roles: ["support"] },
-  { href: "/support/pastoral", label: "Pastoral & medical", icon: "pastoral", roles: ["support"] },
-  { href: "/support/attendance", label: "Attendance", icon: "attendance", roles: ["support"] },
-  { href: "/support/directory", label: "Student Directory", icon: "directory", roles: ["support"] },
-  { href: "/support/trips", label: "Trips", icon: "trips", roles: ["support"] },
-  { href: "/support/rooms", label: "Room Booking", icon: "rooms", roles: ["support"] },
-  { href: "/support/news", label: "Daily News", icon: "news", roles: ["support"] },
-  { href: "/support/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["support"] },
-  { href: "/support/profile", label: "Profile", icon: "profile", roles: ["support"] },
+  // —— Parent ——
+  {
+    id: "parent-home",
+    label: "Home",
+    roles: ["parent"],
+    items: [{ href: "/parent", label: "Family Hub", icon: "dashboard" }],
+  },
+  {
+    id: "parent-learn",
+    label: "Learning",
+    roles: ["parent"],
+    items: [
+      { href: "/parent/classes", label: "Classes", icon: "classes" },
+      { href: "/parent/classroom", label: "Classroom", icon: "classroom" },
+      { href: "/parent/timetable", label: "Schedules", icon: "timetable" },
+      { href: "/parent/attendance", label: "Attendance", icon: "attendance" },
+      { href: "/parent/homework", label: "Homework", icon: "assignments" },
+      { href: "/parent/grades", label: "Grades", icon: "gradebook" },
+      { href: "/parent/report-cards", label: "Report cards", icon: "reports" },
+      { href: "/parent/reports", label: "Legacy reports", icon: "gradebook" },
+    ],
+  },
+  {
+    id: "parent-family",
+    label: "Family & school",
+    roles: ["parent"],
+    items: [
+      { href: "/parent/fees", label: "Fees", icon: "fees" },
+      { href: "/parent/meetings", label: "Meeting Booking", icon: "meetings" },
+      { href: "/parent/trips", label: "Trips & consent", icon: "trips" },
+      { href: "/parent/ecas", label: "ECAs", icon: "ecas" },
+      { href: "/parent/fixtures", label: "Fixtures", icon: "fixtures" },
+      { href: "/parent/library", label: "Online Library", icon: "library" },
+    ],
+  },
+  {
+    id: "parent-comms",
+    label: "Communication",
+    roles: ["parent"],
+    items: [
+      { href: "/parent/chat", label: "Chat", icon: "chat" },
+      { href: "/parent/news", label: "Daily News", icon: "news" },
+      { href: "/parent/notifications", label: "Notifications", icon: "notifications", badge: 2 },
+    ],
+  },
+  {
+    id: "parent-account",
+    label: "Account",
+    roles: ["parent"],
+    items: [{ href: "/parent/profile", label: "Profile", icon: "profile" }],
+  },
+
+  // —— Support ——
+  {
+    id: "support-care",
+    label: "Student care",
+    roles: ["support"],
+    items: [
+      { href: "/support", label: "Safeguarding Desk", icon: "safeguarding", badge: 2 },
+      { href: "/support/pastoral", label: "Pastoral & medical", icon: "pastoral" },
+      { href: "/support/attendance", label: "Attendance", icon: "attendance" },
+      { href: "/support/directory", label: "Student Directory", icon: "directory" },
+    ],
+  },
+  {
+    id: "support-ops",
+    label: "Operations",
+    roles: ["support"],
+    items: [
+      { href: "/support/trips", label: "Trips", icon: "trips" },
+      { href: "/support/rooms", label: "Room Booking", icon: "rooms" },
+    ],
+  },
+  {
+    id: "support-comms",
+    label: "Communication",
+    roles: ["support"],
+    items: [
+      { href: "/support/news", label: "Daily News", icon: "news" },
+      { href: "/support/notifications", label: "Notifications", icon: "notifications", badge: 2 },
+    ],
+  },
+  {
+    id: "support-account",
+    label: "Account",
+    roles: ["support"],
+    items: [{ href: "/support/profile", label: "Profile", icon: "profile" }],
+  },
 ];
+
+function isItemActive(pathname: string, href: string, role: AppRole) {
+  const roots = [`/${role}`, "/admin", "/staff", "/student", "/parent", "/support"];
+  if (roots.includes(href)) return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function MacOsSidebar() {
   const pathname = usePathname();
@@ -241,7 +423,33 @@ export function MacOsSidebar() {
   const setNotificationOpen = useAppStore((s) => s.setNotificationOpen);
   const { theme, setTheme } = useTheme();
 
-  const items = NAV.filter((n) => n.roles.includes(role));
+  const groups = useMemo(
+    () => NAV_GROUPS.filter((g) => g.roles.includes(role)),
+    [role]
+  );
+
+  const activeGroupId = useMemo(() => {
+    for (const group of groups) {
+      if (group.items.some((item) => isItemActive(pathname, item.href, role))) {
+        return group.id;
+      }
+    }
+    return groups[0]?.id ?? "";
+  }, [groups, pathname, role]);
+
+  const [openIds, setOpenIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    setOpenIds((prev) =>
+      prev.includes(activeGroupId) ? prev : [...prev, activeGroupId]
+    );
+  }, [activeGroupId]);
+
+  function toggleGroup(id: string) {
+    setOpenIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  }
 
   return (
     <aside
@@ -261,38 +469,88 @@ export function MacOsSidebar() {
         ) : null}
       </div>
 
-      <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 pb-3">
-        {items.map((item) => {
-          const Icon = ICONS[item.icon];
-          const active =
-            item.href === `/${role}` ||
-            item.href === "/support" ||
-            item.href === "/admin" ||
-            item.href === "/staff" ||
-            item.href === "/student" ||
-            item.href === "/parent"
-              ? pathname === item.href
-              : pathname === item.href || pathname.startsWith(`${item.href}/`);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "group flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[13px] font-medium transition-colors",
-                active
-                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                  : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/8"
-              )}
-              title={item.label}
-            >
-              <Icon className="h-[18px] w-[18px] shrink-0" />
-              {!collapsed && <span className="truncate">{item.label}</span>}
-              {!collapsed && item.badge ? (
-                <Badge className="ml-auto">{item.badge}</Badge>
-              ) : null}
-            </Link>
-          );
-        })}
+      <nav className="flex-1 space-y-1 overflow-y-auto px-2 pb-3">
+        {collapsed
+          ? groups.flatMap((group) =>
+              group.items.map((item) => {
+                const Icon = ICONS[item.icon];
+                const active = isItemActive(pathname, item.href, role);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    title={item.label}
+                    className={cn(
+                      "relative flex items-center justify-center rounded-[10px] p-2.5 transition-colors",
+                      active
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/8"
+                    )}
+                  >
+                    <Icon className="h-[18px] w-[18px]" />
+                    {item.badge ? (
+                      <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+                    ) : null}
+                  </Link>
+                );
+              })
+            )
+          : groups.map((group) => {
+              const open = openIds.includes(group.id);
+              const groupActive = group.id === activeGroupId;
+              return (
+                <div key={group.id} className="mb-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.id)}
+                    className={cn(
+                      "flex w-full items-center gap-2 rounded-[10px] px-2.5 py-1.5 text-left transition-colors",
+                      groupActive
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/8"
+                    )}
+                  >
+                    <span className="flex-1 text-[11px] font-semibold uppercase tracking-wide">
+                      {group.label}
+                    </span>
+                    <ChevronDown
+                      className={cn(
+                        "h-3.5 w-3.5 shrink-0 transition-transform duration-200",
+                        open ? "rotate-0" : "-rotate-90"
+                      )}
+                    />
+                  </button>
+
+                  {open ? (
+                    <div className="mt-0.5 space-y-0.5 pl-0.5">
+                      {group.items.map((item) => {
+                        const Icon = ICONS[item.icon];
+                        const active = isItemActive(pathname, item.href, role);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                              "group flex items-center gap-2.5 rounded-[10px] px-2.5 py-2 text-[13px] font-medium transition-colors",
+                              active
+                                ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                : "text-muted-foreground hover:bg-black/5 hover:text-foreground dark:hover:bg-white/8"
+                            )}
+                            title={item.label}
+                          >
+                            <Icon className="h-[18px] w-[18px] shrink-0" />
+                            <span className="truncate">{item.label}</span>
+                            {item.badge ? (
+                              <Badge className="ml-auto">{item.badge}</Badge>
+                            ) : null}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
       </nav>
 
       <div className="space-y-2 border-t border-black/5 p-2 dark:border-white/10">
@@ -338,7 +596,7 @@ export function MacOsSidebar() {
             collapsed && "justify-center"
           )}
         >
-          <AvatarBubble seed={user.email || user.id || user.name} size={collapsed ? 32 : 32} />
+          <AvatarBubble seed={user.email || user.id || user.name} size={32} />
           {!collapsed && (
             <div className="min-w-0">
               <p className="truncate text-[12px] font-semibold leading-tight">
