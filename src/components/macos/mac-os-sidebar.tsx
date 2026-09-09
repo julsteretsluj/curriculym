@@ -81,6 +81,7 @@ interface NavDef {
 const NAV: NavDef[] = [
   // Admin
   { href: "/admin", label: "Overview", icon: "dashboard", roles: ["admin"] },
+  { href: "/admin/health", label: "Feature check", icon: "dashboard", roles: ["admin"] },
   { href: "/admin/classes", label: "Classes", icon: "classes", roles: ["admin"] },
   { href: "/admin/courses", label: "Course Catalog", icon: "gradebook", roles: ["admin"] },
   { href: "/admin/ecas", label: "ECAs", icon: "ecas", roles: ["admin"] },

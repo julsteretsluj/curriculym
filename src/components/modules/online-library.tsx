@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { BookMarked, Headphones, Search } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAppStore } from "@/stores/app-store";
 
-const TITLES = [
+const SEED = [
   { title: "IB DP Biology Course Companion", kind: "eBook", available: true },
   { title: "Cambridge IGCSE Mathematics", kind: "eBook", available: true },
   { title: "MYP Individuals & Societies", kind: "eBook", available: false },
@@ -15,6 +17,25 @@ const TITLES = [
 ];
 
 export function OnlineLibrary() {
+  const [items, setItems] = useState(SEED);
+  const [query, setQuery] = useState("");
+  const pushNotification = useAppStore((s) => s.pushNotification);
+
+  const filtered = items.filter((item) =>
+    item.title.toLowerCase().includes(query.trim().toLowerCase())
+  );
+
+  function borrow(title: string) {
+    setItems((prev) =>
+      prev.map((item) => (item.title === title ? { ...item, available: false } : item))
+    );
+    pushNotification({
+      title: "Borrowed",
+      body: `${title} is on your shelf for 14 days.`,
+      kind: "success",
+    });
+  }
+
   return (
     <div className="space-y-5">
       <div>
@@ -29,6 +50,8 @@ export function OnlineLibrary() {
           <Search className="h-4 w-4 text-muted-foreground" />
           <input
             type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search catalog"
             className="h-9 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
           />
@@ -36,7 +59,7 @@ export function OnlineLibrary() {
       </Card>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {TITLES.map((item) => (
+        {filtered.map((item) => (
           <Card key={item.title}>
             <CardHeader>
               <div className="flex items-start justify-between gap-2">
@@ -61,8 +84,13 @@ export function OnlineLibrary() {
               <CardDescription>{item.kind}</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button size="sm" className="rounded-full" disabled={!item.available}>
-                {item.available ? "Borrow" : "Join waitlist"}
+              <Button
+                size="sm"
+                className="rounded-full"
+                disabled={!item.available}
+                onClick={() => borrow(item.title)}
+              >
+                {item.available ? "Borrow" : "On your shelf"}
               </Button>
             </CardContent>
           </Card>

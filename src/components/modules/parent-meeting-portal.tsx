@@ -95,8 +95,25 @@ export function ParentMeetingPortal({ mode = "parent" }: { mode?: "parent" | "st
                         <button
                           key={slot.id}
                           type="button"
-                          disabled={slot.booked && !isSelected}
-                          onClick={() => !slot.booked && mode === "parent" && book(slot.id)}
+                          disabled={mode === "parent" && slot.booked && !isSelected}
+                          onClick={() => {
+                            if (slot.booked && !isSelected) return;
+                            if (mode === "parent") {
+                              if (!slot.booked) book(slot.id);
+                              return;
+                            }
+                            // Staff/admin can toggle availability for demos
+                            setSlots((prev) =>
+                              prev.map((s) =>
+                                s.id === slot.id ? { ...s, booked: !s.booked } : s
+                              )
+                            );
+                            pushNotification({
+                              title: slot.booked ? "Slot reopened" : "Slot held",
+                              body: `${slot.teacher} · availability updated.`,
+                              kind: "info",
+                            });
+                          }}
                           className={cn(
                             "w-full rounded-xl border px-2.5 py-2 text-left transition",
                             slot.booked

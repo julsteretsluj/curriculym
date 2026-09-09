@@ -2,13 +2,13 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { DEMO_STUDENTS } from "@/lib/school-population";
 
-const ROWS = [
-  { subject: "MYP Sciences", a: 7, b: 6, c: 7, d: 6, overall: "6" },
-  { subject: "Mathematics", a: 6, b: 7, c: 6, d: 6, overall: "6" },
-  { subject: "English Language & Literature", a: 5, b: 6, c: 6, d: 5, overall: "6" },
-  { subject: "Individuals & Societies", a: 6, b: 6, c: 5, d: 6, overall: "6" },
-];
+function score(seed: string, max = 8) {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return 4 + (h % (max - 3));
+}
 
 export function GradesPanel({
   title = "Grades",
@@ -17,6 +17,24 @@ export function GradesPanel({
   title?: string;
   description?: string;
 }) {
+  const classmates = DEMO_STUDENTS.filter((s) => s.formGroup === "G8A").slice(0, 8);
+  const focus = classmates.find((s) => s.name === "Aria Patel") ?? classmates[0]!;
+  const subjects = [
+    "MYP Sciences",
+    "Mathematics",
+    "English Language & Literature",
+    "Individuals & Societies",
+  ];
+
+  const rows = subjects.map((subject) => {
+    const a = score(`${focus.id}-${subject}-a`);
+    const b = score(`${focus.id}-${subject}-b`);
+    const c = score(`${focus.id}-${subject}-c`);
+    const d = score(`${focus.id}-${subject}-d`);
+    const overall = Math.round((a + b + c + d) / 4);
+    return { subject, a, b, c, d, overall: String(overall) };
+  });
+
   return (
     <div className="space-y-5">
       <div>
@@ -25,11 +43,13 @@ export function GradesPanel({
       </div>
       <Card>
         <CardHeader>
-          <CardTitle>Current term</CardTitle>
-          <CardDescription>IB MYP criteria A–D · Harbor International</CardDescription>
+          <CardTitle>Current term · {focus.name}</CardTitle>
+          <CardDescription>
+            IB MYP criteria A–D · {focus.formGroup} · House {focus.house}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
-          {ROWS.map((row) => (
+          {rows.map((row) => (
             <div
               key={row.subject}
               className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-black/5 bg-muted/30 px-3 py-3 text-sm dark:border-white/10"
