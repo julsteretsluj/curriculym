@@ -3,13 +3,24 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { LandingNav, ProductWindowPreview } from "@/components/landing/landing-chrome";
 import { BrandMark } from "@/components/brand-mark";
-import { roleFromMetadata, roleHomePath } from "@/lib/clerk-roles";
+import { resolveAccountAccess, roleHomePath } from "@/lib/clerk-roles";
 
 export default async function LandingPage() {
   const { userId } = await auth();
   if (userId) {
     const user = await currentUser();
-    redirect(roleHomePath(roleFromMetadata(user?.publicMetadata)));
+    const email =
+      user?.primaryEmailAddress?.emailAddress ??
+      user?.emailAddresses?.[0]?.emailAddress ??
+      "";
+    const access = resolveAccountAccess({
+      email,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      fullName: user?.fullName,
+      metadata: user?.publicMetadata,
+    });
+    redirect(roleHomePath(access.primaryRole));
   }
 
   return (

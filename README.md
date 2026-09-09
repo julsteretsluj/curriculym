@@ -26,14 +26,23 @@ npx clerk@latest auth login
 
 ### Roles
 
-Set a user’s **Public metadata** in the [Clerk Dashboard](https://dashboard.clerk.com/) to control the workspace role:
+Workspace views are bound to the signed-in account.
+
+- **Superuser** `juleskittoastrop@gmail.com` can open every view (Admin / Staff / Student / Parent / CPO) via the top switcher.
+- Other accounts use Clerk **Public metadata**:
 
 ```json
-{ "role": "admin" }
+{ "role": "staff" }
+```
+
+Or multiple views:
+
+```json
+{ "roles": ["staff", "parent"] }
 ```
 
 Allowed values: `admin` · `staff` · `student` · `parent` · `support`  
-(Default if unset: `admin`.)
+(Default if unset: `admin` only.)
 
 ### Database (optional for UI demo)
 

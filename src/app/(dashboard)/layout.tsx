@@ -1,7 +1,12 @@
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { DashboardShell } from "@/components/macos/dashboard-shell";
-import { roleFromMetadata } from "@/lib/clerk-roles";
+import {
+  pathRole,
+  resolveAccountAccess,
+  roleHomePath,
+} from "@/lib/clerk-roles";
 
 export default async function DashboardLayout({
   children,
@@ -14,7 +19,25 @@ export default async function DashboardLayout({
   }
 
   const user = await currentUser();
-  const role = roleFromMetadata(user?.publicMetadata);
+  const email =
+    user?.primaryEmailAddress?.emailAddress ??
+    user?.emailAddresses?.[0]?.emailAddress ??
+    "";
 
-  return <DashboardShell role={role}>{children}</DashboardShell>;
+  const access = resolveAccountAccess({
+    email,
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    fullName: user?.fullName,
+    metadata: user?.publicMetadata,
+  });
+
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const routeRole = pathRole(pathname);
+
+  if (routeRole && !access.allowedRoles.includes(routeRole)) {
+    redirect(roleHomePath(access.primaryRole));
+  }
+
+  return <DashboardShell access={access}>{children}</DashboardShell>;
 }

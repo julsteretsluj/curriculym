@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { SegmentedControl } from "@/components/ui/segmented-control";
 import { useAppStore } from "@/stores/app-store";
 import type { AppRole } from "@/lib/demo-data";
+import { roleHomePath } from "@/lib/clerk-roles";
 
 const ROLE_OPTIONS: { value: AppRole; label: string }[] = [
   { value: "admin", label: "Admin" },
@@ -20,10 +21,16 @@ interface MacOsTopNavProps {
 
 export function MacOsTopNav({ title }: MacOsTopNavProps) {
   const role = useAppStore((s) => s.role);
+  const allowedRoles = useAppStore((s) => s.allowedRoles);
   const setRole = useAppStore((s) => s.setRole);
   const studentBand = useAppStore((s) => s.studentBand);
   const setStudentBand = useAppStore((s) => s.setStudentBand);
   const router = useRouter();
+
+  const viewOptions = ROLE_OPTIONS.filter((opt) =>
+    allowedRoles.includes(opt.value)
+  );
+  const showViewSwitcher = viewOptions.length > 1;
 
   return (
     <header className="macos-glass sticky top-0 z-20 flex h-12 shrink-0 items-center gap-3 border-b border-black/5 px-4 dark:border-white/10">
@@ -48,15 +55,21 @@ export function MacOsTopNav({ title }: MacOsTopNavProps) {
             ]}
           />
         )}
-        <SegmentedControl
-          value={role}
-          onChange={(v) => {
-            const next = v as AppRole;
-            setRole(next);
-            router.push(`/${next === "support" ? "support" : next}`);
-          }}
-          options={ROLE_OPTIONS}
-        />
+        {showViewSwitcher ? (
+          <SegmentedControl
+            value={role}
+            onChange={(v) => {
+              const next = v as AppRole;
+              setRole(next);
+              router.push(roleHomePath(next));
+            }}
+            options={viewOptions}
+          />
+        ) : (
+          <span className="rounded-lg bg-muted/60 px-3 py-1.5 text-xs font-medium capitalize text-muted-foreground">
+            {viewOptions[0]?.label ?? role}
+          </span>
+        )}
       </div>
 
       <label className="relative hidden sm:block">

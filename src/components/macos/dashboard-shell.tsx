@@ -1,23 +1,44 @@
 "use client";
 
 import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { MacOsWindowFrame } from "@/components/macos/mac-os-window-frame";
 import { useAppStore } from "@/stores/app-store";
-import type { AppRole } from "@/lib/demo-data";
+import { pathRole, roleHomePath, type AccountAccess } from "@/lib/clerk-roles";
 
 export function DashboardShell({
   children,
-  role,
+  access,
 }: {
   children: React.ReactNode;
-  role: AppRole;
+  access: AccountAccess;
 }) {
+  const hydrateAccess = useAppStore((s) => s.hydrateAccess);
   const setRole = useAppStore((s) => s.setRole);
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    setRole(role);
-  }, [role, setRole]);
+    const required = pathRole(pathname) ?? access.primaryRole;
+    const allowed =
+      access.canAccessAll || access.allowedRoles.includes(required);
+
+    hydrateAccess({
+      role: allowed ? required : access.primaryRole,
+      allowedRoles: access.allowedRoles,
+      email: access.email,
+      name: access.name,
+      canAccessAll: access.canAccessAll,
+    });
+
+    if (!allowed) {
+      router.replace(roleHomePath(access.primaryRole));
+      return;
+    }
+
+    setRole(required);
+  }, [access, pathname, hydrateAccess, setRole, router]);
 
   return (
     <div className="relative">
