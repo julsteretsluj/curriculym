@@ -25,6 +25,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { useAppStore } from "@/stores/app-store";
+import { useShallow } from "zustand/react/shallow";
 import type { AppRole } from "@/lib/demo-data";
 import { BrandMark } from "@/components/brand-mark";
 
@@ -107,7 +108,16 @@ const NAV: NavDef[] = [
 export function MacOsSidebar() {
   const pathname = usePathname();
   const role = useAppStore((s) => s.role);
-  const user = useAppStore((s) => s.currentUser());
+  const user = useAppStore(
+    useShallow((s) => {
+      const u = s.currentUser();
+      return {
+        name: u.name,
+        title: u.title,
+        avatarInitials: u.avatarInitials,
+      };
+    })
+  );
   const collapsed = useAppStore((s) => s.sidebarCollapsed);
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   const unread = useAppStore((s) => s.notifications.length);

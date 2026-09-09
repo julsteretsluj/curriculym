@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
 import { MacOsWindowFrame } from "@/components/macos/mac-os-window-frame";
@@ -18,6 +18,18 @@ export function DashboardShell({
   const setRole = useAppStore((s) => s.setRole);
   const pathname = usePathname();
   const router = useRouter();
+
+  const accessKey = useMemo(
+    () =>
+      [
+        access.email,
+        access.name,
+        access.primaryRole,
+        access.canAccessAll ? "1" : "0",
+        access.allowedRoles.join(","),
+      ].join("|"),
+    [access]
+  );
 
   useEffect(() => {
     const required = pathRole(pathname) ?? access.primaryRole;
@@ -38,7 +50,7 @@ export function DashboardShell({
     }
 
     setRole(required);
-  }, [access, pathname, hydrateAccess, setRole, router]);
+  }, [access, accessKey, pathname, hydrateAccess, setRole, router]);
 
   return (
     <div className="relative">

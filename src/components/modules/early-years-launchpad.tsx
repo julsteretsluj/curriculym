@@ -22,13 +22,13 @@ const APPS = [
 ];
 
 export function EarlyYearsLaunchpad() {
-  const user = useAppStore((s) => s.currentUser());
+  const name = useAppStore((s) => s.currentUser().name);
 
   return (
     <div className="mx-auto max-w-3xl py-4">
       <div className="mb-8 text-center">
         <p className="text-sm font-medium text-muted-foreground">Good morning</p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{user.name}</h1>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{name}</h1>
         <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-traffic-yellow/25 px-3 py-1.5 text-sm font-medium">
           <Trophy className="h-4 w-4 text-amber-600" />
           12 star badges this week

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useShallow } from "zustand/react/shallow";
 import { cn } from "@/lib/utils";
 import { MacOsTopNav } from "./mac-os-top-nav";
 import { MacOsSidebar } from "./mac-os-sidebar";
@@ -14,9 +15,18 @@ interface MacOsWindowFrameProps {
 }
 
 export function MacOsWindowFrame({ children, className }: MacOsWindowFrameProps) {
-  const user = useAppStore((s) => s.currentUser());
+  const { schoolName, role, gradeBand } = useAppStore(
+    useShallow((s) => {
+      const user = s.currentUser();
+      return {
+        schoolName: user.schoolName,
+        role: user.role,
+        gradeBand: user.gradeBand,
+      };
+    })
+  );
   const studentBand = useAppStore((s) => s.studentBand);
-  const title = `${user.schoolName} — ${roleDashboardLabel(user.role, user.gradeBand ?? studentBand)} — Curriculym`;
+  const title = `${schoolName} — ${roleDashboardLabel(role, gradeBand ?? studentBand)} — Curriculym`;
 
   return (
     <div className="desktop-wallpaper flex min-h-screen items-center justify-center p-3 md:p-5">
