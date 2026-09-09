@@ -4,8 +4,8 @@ import { useEffect } from "react";
 import { useAppStore } from "@/stores/app-store";
 import { DailyNewsFeed } from "@/components/modules/daily-news-feed";
 
-export default function ParentNewsPage() {
+export default function Page() {
   const setRole = useAppStore((s) => s.setRole);
-  useEffect(() => setRole("parent"), [setRole]);
-  return <DailyNewsFeed title="School news" description="Daily updates and newsletters." />;
+  useEffect(() => setRole("student"), [setRole]);
+  return <DailyNewsFeed />;
 }

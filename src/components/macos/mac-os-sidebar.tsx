@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import {
   Bell,
+  BookMarked,
   BookOpen,
   CalendarClock,
   CalendarDays,
@@ -16,6 +17,8 @@ import {
   Newspaper,
   School,
   ShieldAlert,
+  Trophy,
+  UserRound,
   Users,
   ChevronLeft,
   ChevronRight,
@@ -28,6 +31,7 @@ import { useAppStore } from "@/stores/app-store";
 import { useShallow } from "zustand/react/shallow";
 import type { AppRole } from "@/lib/demo-data";
 import { BrandMark } from "@/components/brand-mark";
+import { roleHomePath } from "@/lib/clerk-roles";
 
 type IconKey =
   | "dashboard"
@@ -41,7 +45,11 @@ type IconKey =
   | "meetings"
   | "rooms"
   | "gradebook"
-  | "school";
+  | "school"
+  | "ecas"
+  | "library"
+  | "notifications"
+  | "profile";
 
 const ICONS: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   dashboard: LayoutDashboard,
@@ -56,6 +64,10 @@ const ICONS: Record<IconKey, React.ComponentType<{ className?: string }>> = {
   rooms: DoorOpen,
   gradebook: GraduationCap,
   school: School,
+  ecas: Trophy,
+  library: BookMarked,
+  notifications: Bell,
+  profile: UserRound,
 };
 
 interface NavDef {
@@ -67,42 +79,74 @@ interface NavDef {
 }
 
 const NAV: NavDef[] = [
+  // Admin
   { href: "/admin", label: "Overview", icon: "dashboard", roles: ["admin"] },
-  { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
-  { href: "/admin/courses", label: "Course Catalog", icon: "classes", roles: ["admin"] },
-  { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
+  { href: "/admin/classes", label: "Classes", icon: "classes", roles: ["admin"] },
+  { href: "/admin/courses", label: "Course Catalog", icon: "gradebook", roles: ["admin"] },
+  { href: "/admin/ecas", label: "ECAs", icon: "ecas", roles: ["admin"] },
+  { href: "/admin/library", label: "Online Library", icon: "library", roles: ["admin"] },
+  { href: "/admin/chat", label: "Chat", icon: "chat", roles: ["admin"] },
+  { href: "/admin/news", label: "Daily News", icon: "news", roles: ["admin"] },
   { href: "/admin/newsletters", label: "Newsletters", icon: "news", roles: ["admin"] },
-  {
-    href: "/admin/safeguarding",
-    label: "Safeguarding",
-    icon: "safeguarding",
-    badge: 2,
-    roles: ["admin"],
-  },
+  { href: "/admin/meetings", label: "Meeting Booking", icon: "meetings", roles: ["admin"] },
+  { href: "/admin/rooms", label: "Room Booking", icon: "rooms", roles: ["admin"] },
+  { href: "/admin/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["admin"] },
+  { href: "/admin/directory", label: "Directory", icon: "directory", roles: ["admin"] },
+  { href: "/admin/school", label: "School Setup", icon: "school", roles: ["admin"] },
+  { href: "/admin/safeguarding", label: "Safeguarding", icon: "safeguarding", badge: 2, roles: ["admin"] },
+  { href: "/admin/profile", label: "Profile", icon: "profile", roles: ["admin"] },
+
+  // Staff
   { href: "/staff", label: "Overview", icon: "dashboard", roles: ["staff"] },
   { href: "/staff/classes", label: "Classes", icon: "classes", roles: ["staff"] },
-  { href: "/staff/courses", label: "Courses", icon: "gradebook", roles: ["staff"] },
-  { href: "/staff/timetable", label: "Timetable", icon: "timetable", roles: ["staff"] },
-  { href: "/staff/gradebook", label: "Gradebook", icon: "gradebook", roles: ["staff"] },
-  { href: "/staff/meetings", label: "Parent Meetings", icon: "meetings", roles: ["staff"] },
+  { href: "/staff/timetable", label: "Schedules", icon: "timetable", roles: ["staff"] },
+  { href: "/staff/assignments", label: "Homework", icon: "assignments", roles: ["staff"] },
+  { href: "/staff/gradebook", label: "Grades", icon: "gradebook", roles: ["staff"] },
+  { href: "/staff/ecas", label: "ECAs", icon: "ecas", roles: ["staff"] },
+  { href: "/staff/library", label: "Online Library", icon: "library", roles: ["staff"] },
+  { href: "/staff/chat", label: "Chat", icon: "chat", roles: ["staff"] },
+  { href: "/staff/news", label: "Daily News", icon: "news", roles: ["staff"] },
+  { href: "/staff/meetings", label: "Meeting Booking", icon: "meetings", roles: ["staff"] },
   { href: "/staff/rooms", label: "Room Booking", icon: "rooms", roles: ["staff"] },
+  { href: "/staff/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["staff"] },
+  { href: "/staff/courses", label: "Courses", icon: "classes", roles: ["staff"] },
+  { href: "/staff/profile", label: "Profile", icon: "profile", roles: ["staff"] },
+
+  // Student
   { href: "/student", label: "Home", icon: "dashboard", roles: ["student"] },
-  { href: "/student/timetable", label: "Timetable", icon: "timetable", roles: ["student"] },
-  {
-    href: "/student/assignments",
-    label: "Homework",
-    icon: "assignments",
-    badge: 3,
-    roles: ["student"],
-  },
+  { href: "/student/classes", label: "Classes", icon: "classes", roles: ["student"] },
+  { href: "/student/timetable", label: "Schedules", icon: "timetable", roles: ["student"] },
+  { href: "/student/assignments", label: "Homework", icon: "assignments", badge: 3, roles: ["student"] },
+  { href: "/student/grades", label: "Grades", icon: "gradebook", roles: ["student"] },
+  { href: "/student/ecas", label: "ECAs", icon: "ecas", roles: ["student"] },
+  { href: "/student/library", label: "Online Library", icon: "library", roles: ["student"] },
   { href: "/student/chat", label: "Chat", icon: "chat", badge: 5, roles: ["student"] },
+  { href: "/student/news", label: "Daily News", icon: "news", roles: ["student"] },
+  { href: "/student/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["student"] },
+  { href: "/student/profile", label: "Profile", icon: "profile", roles: ["student"] },
+
+  // Parent
   { href: "/parent", label: "Family Hub", icon: "dashboard", roles: ["parent"] },
-  { href: "/parent/meetings", label: "Book Meeting", icon: "meetings", roles: ["parent"] },
+  { href: "/parent/classes", label: "Classes", icon: "classes", roles: ["parent"] },
+  { href: "/parent/timetable", label: "Schedules", icon: "timetable", roles: ["parent"] },
+  { href: "/parent/homework", label: "Homework", icon: "assignments", roles: ["parent"] },
+  { href: "/parent/grades", label: "Grades", icon: "gradebook", roles: ["parent"] },
+  { href: "/parent/ecas", label: "ECAs", icon: "ecas", roles: ["parent"] },
+  { href: "/parent/library", label: "Online Library", icon: "library", roles: ["parent"] },
+  { href: "/parent/chat", label: "Chat", icon: "chat", roles: ["parent"] },
+  { href: "/parent/news", label: "Daily News", icon: "news", roles: ["parent"] },
+  { href: "/parent/meetings", label: "Meeting Booking", icon: "meetings", roles: ["parent"] },
+  { href: "/parent/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["parent"] },
   { href: "/parent/reports", label: "Reports", icon: "gradebook", roles: ["parent"] },
-  { href: "/parent/news", label: "School News", icon: "news", roles: ["parent"] },
+  { href: "/parent/profile", label: "Profile", icon: "profile", roles: ["parent"] },
+
+  // Support / CPO
   { href: "/support", label: "Safeguarding Desk", icon: "safeguarding", badge: 2, roles: ["support"] },
   { href: "/support/directory", label: "Student Directory", icon: "directory", roles: ["support"] },
-  { href: "/support/rooms", label: "Quiet Rooms", icon: "rooms", roles: ["support"] },
+  { href: "/support/rooms", label: "Room Booking", icon: "rooms", roles: ["support"] },
+  { href: "/support/news", label: "Daily News", icon: "news", roles: ["support"] },
+  { href: "/support/notifications", label: "Notifications", icon: "notifications", badge: 2, roles: ["support"] },
+  { href: "/support/profile", label: "Profile", icon: "profile", roles: ["support"] },
 ];
 
 export function MacOsSidebar() {
@@ -148,7 +192,14 @@ export function MacOsSidebar() {
         {items.map((item) => {
           const Icon = ICONS[item.icon];
           const active =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+            item.href === `/${role}` ||
+            item.href === "/support" ||
+            item.href === "/admin" ||
+            item.href === "/staff" ||
+            item.href === "/student" ||
+            item.href === "/parent"
+              ? pathname === item.href
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
           return (
             <Link
               key={item.href}
@@ -207,9 +258,10 @@ export function MacOsSidebar() {
           </button>
         </div>
 
-        <div
+        <Link
+          href={`${roleHomePath(role)}/profile`}
           className={cn(
-            "flex items-center gap-2.5 rounded-[12px] bg-black/[0.03] p-2 dark:bg-white/[0.05]",
+            "flex items-center gap-2.5 rounded-[12px] bg-black/[0.03] p-2 transition hover:bg-black/[0.06] dark:bg-white/[0.05] dark:hover:bg-white/[0.08]",
             collapsed && "justify-center"
           )}
         >
@@ -226,7 +278,7 @@ export function MacOsSidebar() {
               </p>
             </div>
           )}
-        </div>
+        </Link>
       </div>
     </aside>
   );
