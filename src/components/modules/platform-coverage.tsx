@@ -10,7 +10,7 @@ const COVERAGE: {
   modules: { name: string; href: string }[];
 }[] = [
   {
-    product: "iSAMS",
+    product: "School operations",
     replaces: "MIS / SMS",
     modules: [
       { name: "Admissions", href: "/admin/admissions" },
@@ -26,7 +26,7 @@ const COVERAGE: {
     ],
   },
   {
-    product: "ManageBac",
+    product: "Curriculum & assessment",
     replaces: "IB / curriculum LMS",
     modules: [
       { name: "Course catalog", href: "/admin/courses" },
@@ -39,8 +39,8 @@ const COVERAGE: {
     ],
   },
   {
-    product: "SOCS",
-    replaces: "Sport & co-curricular",
+    product: "Sport & co-curricular",
+    replaces: "Activities hub",
     modules: [
       { name: "Fixtures & squads", href: "/staff/fixtures" },
       { name: "ECAs / clubs", href: "/admin/ecas" },
@@ -49,7 +49,7 @@ const COVERAGE: {
     ],
   },
   {
-    product: "Google Classroom",
+    product: "Teaching & learning",
     replaces: "Class LMS",
     modules: [
       { name: "Classroom stream", href: "/staff/classroom" },
@@ -68,7 +68,8 @@ export function PlatformCoverage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Platform coverage</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Curriculym modules mapped to iSAMS, ManageBac, SOCS, and Google Classroom.
+          Everything your school runs day to day — operations, curriculum, activities, and class
+          learning — in one Curriculym workspace.
         </p>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
@@ -76,7 +77,7 @@ export function PlatformCoverage() {
           <Card key={block.product}>
             <CardHeader>
               <div className="flex items-center justify-between gap-2">
-                <CardTitle>Replaces {block.product}</CardTitle>
+                <CardTitle>{block.product}</CardTitle>
                 <Badge className="bg-primary/15 text-primary">{block.replaces}</Badge>
               </div>
               <CardDescription>{block.modules.length} linked modules</CardDescription>

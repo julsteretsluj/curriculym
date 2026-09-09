@@ -44,7 +44,7 @@ const SQUADS = [
   { name: "Mateo Silva", role: "GK", kit: "1" },
 ];
 
-export function FixturesSocs() {
+export function FixturesHub() {
   const [tab, setTab] = useState<"fixtures" | "squads" | "clubs">("fixtures");
   const pushNotification = useAppStore((s) => s.pushNotification);
 
@@ -53,7 +53,7 @@ export function FixturesSocs() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Sport & activities</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Fixtures, squads, and club registers — SOCS replacement.
+          Fixtures, squads, and club registers for sport and activities.
         </p>
       </div>
       <div className="flex flex-wrap gap-2">

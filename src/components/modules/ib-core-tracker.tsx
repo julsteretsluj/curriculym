@@ -34,7 +34,7 @@ export function IbCoreTracker() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">IB Core</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          CAS · EE · TOK — ManageBac core programme replacement.
+          CAS · EE · TOK tracking for the IB Diploma core.
         </p>
       </div>
       <div className="flex flex-wrap gap-2">

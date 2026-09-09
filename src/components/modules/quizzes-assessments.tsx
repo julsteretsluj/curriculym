@@ -45,7 +45,7 @@ export function QuizzesAssessments() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Quizzes & checks</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Formative quizzes with auto-sync to grades — Classroom / ManageBac tasks.
+          Formative quizzes with auto-sync into the gradebook.
         </p>
       </div>
 

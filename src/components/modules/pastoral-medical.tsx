@@ -26,7 +26,7 @@ export function PastoralMedical() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Pastoral & medical</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Wellbeing notes, medical flags, and behaviour points — iSAMS pastoral desk.
+          Wellbeing notes, medical flags, and behaviour points for pastoral teams.
         </p>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">

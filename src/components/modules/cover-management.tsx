@@ -19,7 +19,7 @@ export function CoverManagement() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Cover & absence</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Staff absence and cover assignment — iSAMS Cover Manager.
+          Staff absence tracking and cover assignment for the day.
         </p>
       </div>
       <Card>

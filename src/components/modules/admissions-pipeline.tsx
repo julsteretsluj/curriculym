@@ -29,7 +29,7 @@ export function AdmissionsPipeline() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Admissions</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Enquiry-to-enrolment pipeline — iSAMS Admissions replacement.
+          Enquiry-to-enrolment pipeline for the admissions office.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-5">

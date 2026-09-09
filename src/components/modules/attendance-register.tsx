@@ -27,7 +27,7 @@ export function AttendanceRegister({ formGroup = "G8A" }: { formGroup?: string }
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Attendance</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Homeroom register for {formGroup} — replaces iSAMS / Classroom attendance.
+          Homeroom register for {formGroup} — mark present, late, absent, or excused.
         </p>
       </div>
 

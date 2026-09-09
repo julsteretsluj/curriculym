@@ -20,7 +20,7 @@ export function ReportCards() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Report cards</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Criterion comments and PDF packs — iSAMS / ManageBac reporting.
+          Criterion comments and downloadable PDF report packs.
         </p>
       </div>
       <Card>

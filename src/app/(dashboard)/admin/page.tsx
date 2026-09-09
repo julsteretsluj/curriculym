@@ -62,7 +62,7 @@ export default function AdminOverviewPage() {
           {
             href: "/admin/coverage",
             title: "Platform coverage",
-            desc: "Map of iSAMS, ManageBac, SOCS, and Classroom replacements.",
+            desc: "Operations, curriculum, activities, and class learning in one map.",
             icon: Building2,
           },
           {

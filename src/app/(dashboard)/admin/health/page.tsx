@@ -9,12 +9,12 @@ import { useAppStore } from "@/stores/app-store";
 import { populationStats, SCHOOL_POPULATION } from "@/lib/school-population";
 
 const FEATURES: { name: string; href: string; check: () => string }[] = [
-  { name: "Platform coverage", href: "/admin/coverage", check: () => "iSAMS · ManageBac · SOCS · Classroom" },
+  { name: "Platform coverage", href: "/admin/coverage", check: () => "Operations · curriculum · activities · class LMS" },
   { name: "Admissions", href: "/admin/admissions", check: () => "Enquiry → offer pipeline" },
   { name: "Attendance", href: "/staff/attendance", check: () => "Homeroom register" },
   { name: "Classroom", href: "/staff/classroom", check: () => "Stream + classwork" },
   { name: "IB Core", href: "/student/ib-core", check: () => "CAS · EE · TOK" },
-  { name: "Fixtures / SOCS", href: "/staff/fixtures", check: () => "Teams + fixtures" },
+  { name: "Fixtures", href: "/staff/fixtures", check: () => "Teams + fixtures" },
   { name: "Fees", href: "/admin/fees", check: () => "Tuition ledger" },
   { name: "Pastoral", href: "/staff/pastoral", check: () => "Medical + merits" },
   { name: "Cover", href: "/staff/cover", check: () => "Staff absence gaps" },

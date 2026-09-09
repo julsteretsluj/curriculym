@@ -93,8 +93,8 @@ export default async function LandingPage() {
             <div className="md:pt-8">
               <h3 className="text-[21px] font-semibold tracking-tight">Replace the patchwork</h3>
               <p className="mt-2 text-[15px] leading-relaxed text-[#6E6E73]">
-                Unify what schools usually split across iSAMS, ManageBac, and Google Classroom —
-                attendance to unit planning, rooms to report cards.
+                Unify attendance, unit planning, rooms, report cards, and family
+                messaging in one calm workspace.
               </p>
             </div>
             <div className="rounded-[20px] border border-black/5 bg-white p-6 shadow-[0_2px_8px_rgba(0,0,0,0.08)] md:p-8">

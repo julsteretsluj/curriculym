@@ -22,7 +22,7 @@ export function FeesBilling() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Fees & billing</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Tuition, transport, trips, and ECA charges — iSAMS Fees replacement.
+          Tuition, transport, trips, and ECA charges in one family ledger.
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-3">

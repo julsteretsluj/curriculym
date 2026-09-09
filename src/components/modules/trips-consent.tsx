@@ -38,7 +38,7 @@ export function TripsConsent() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Trips & consent</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Educational visits, digital consent, and medical packs — iSAMS / SOCS trips.
+          Educational visits, digital consent forms, and medical packs.
         </p>
       </div>
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
