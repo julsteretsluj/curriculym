@@ -417,6 +417,7 @@ export function MacOsSidebar() {
       };
     })
   );
+  const pronouns = useAppStore((s) => s.profilePronouns);
   const collapsed = useAppStore((s) => s.sidebarCollapsed);
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   const unread = useAppStore((s) => s.notifications.length);
@@ -603,7 +604,7 @@ export function MacOsSidebar() {
                 {user.name}
               </p>
               <p className="truncate text-[11px] text-muted-foreground">
-                {user.title}
+                {pronouns ? `${pronouns} · ${user.title}` : user.title}
               </p>
             </div>
           )}

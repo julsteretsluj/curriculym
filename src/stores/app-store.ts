@@ -19,6 +19,56 @@ export interface MacNotification {
   href?: string;
 }
 
+export const PRONOUN_OPTIONS = [
+  "she/her",
+  "he/him",
+  "they/them",
+  "she/they",
+  "he/they",
+  "any pronouns",
+  "prefer not to say",
+] as const;
+
+export const INTEREST_OPTIONS = [
+  "Science",
+  "Math",
+  "Reading",
+  "Writing",
+  "Art",
+  "Music",
+  "Drama",
+  "Coding",
+  "Design",
+  "Languages",
+  "History",
+  "Environment",
+  "Debate",
+  "Photography",
+  "Cooking",
+  "Volunteering",
+] as const;
+
+export const CLUB_SPORT_OPTIONS = [
+  "Football",
+  "Basketball",
+  "Swimming",
+  "Athletics",
+  "Tennis",
+  "Volleyball",
+  "Robotics Club",
+  "Chamber Choir",
+  "Debate Society",
+  "Model United Nations",
+  "Art Studio",
+  "Jazz Ensemble",
+  "Drama Club",
+  "Coding Club",
+  "Eco Club",
+  "Student Council",
+] as const;
+
+export type PronounOption = (typeof PRONOUN_OPTIONS)[number];
+
 interface AppState {
   role: AppRole;
   allowedRoles: AppRole[];
@@ -29,6 +79,11 @@ interface AppState {
   sidebarCollapsed: boolean;
   notifications: MacNotification[];
   notificationOpen: boolean;
+  /** Editable profile fields */
+  profileDisplayName: string;
+  profilePronouns: PronounOption | "";
+  profileInterests: string[];
+  profileClubsSports: string[];
   hydrateAccess: (access: {
     role: AppRole;
     allowedRoles: AppRole[];
@@ -43,6 +98,10 @@ interface AppState {
   pushNotification: (n: Omit<MacNotification, "id" | "createdAt">) => void;
   dismissNotification: (id: string) => void;
   clearNotifications: () => void;
+  setProfileDisplayName: (name: string) => void;
+  setProfilePronouns: (pronouns: PronounOption | "") => void;
+  toggleProfileInterest: (interest: string) => void;
+  toggleProfileClubSport: (item: string) => void;
   currentUser: () => DemoUser;
   canViewRole: (role: AppRole) => boolean;
 }
@@ -56,6 +115,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   studentBand: "upper",
   sidebarCollapsed: false,
   notificationOpen: false,
+  profileDisplayName: "",
+  profilePronouns: "",
+  profileInterests: ["Science", "Reading", "Coding"],
+  profileClubsSports: ["Robotics Club", "Football"],
   notifications: [
     {
       id: "n1",
@@ -73,13 +136,14 @@ export const useAppStore = create<AppState>((set, get) => ({
     },
   ],
   hydrateAccess: (access) =>
-    set({
+    set((s) => ({
       role: access.role,
       allowedRoles: access.allowedRoles,
       accountEmail: access.email,
       accountName: access.name,
       canAccessAll: access.canAccessAll,
-    }),
+      profileDisplayName: s.profileDisplayName || access.name,
+    })),
   setRole: (role) => {
     const { allowedRoles, canAccessAll } = get();
     if (canAccessAll || allowedRoles.includes(role)) {
@@ -107,26 +171,47 @@ export const useAppStore = create<AppState>((set, get) => ({
       notifications: s.notifications.filter((n) => n.id !== id),
     })),
   clearNotifications: () => set({ notifications: [] }),
+  setProfileDisplayName: (profileDisplayName) => set({ profileDisplayName }),
+  setProfilePronouns: (profilePronouns) => set({ profilePronouns }),
+  toggleProfileInterest: (interest) =>
+    set((s) => ({
+      profileInterests: s.profileInterests.includes(interest)
+        ? s.profileInterests.filter((i) => i !== interest)
+        : [...s.profileInterests, interest],
+    })),
+  toggleProfileClubSport: (item) =>
+    set((s) => ({
+      profileClubsSports: s.profileClubsSports.includes(item)
+        ? s.profileClubsSports.filter((i) => i !== item)
+        : [...s.profileClubsSports, item],
+    })),
   canViewRole: (role) => {
     const { allowedRoles, canAccessAll } = get();
     return canAccessAll || allowedRoles.includes(role);
   },
   currentUser: () => {
-    const { role, studentBand, accountName, accountEmail } = get();
+    const {
+      role,
+      studentBand,
+      accountName,
+      accountEmail,
+      profileDisplayName,
+    } = get();
+    const displayName = profileDisplayName || accountName;
     if (role === "student" && studentBand === "early_years") {
       return {
         ...EARLY_YEARS_STUDENT,
-        name: accountName || EARLY_YEARS_STUDENT.name,
+        name: displayName || EARLY_YEARS_STUDENT.name,
         email: accountEmail || EARLY_YEARS_STUDENT.email,
       };
     }
     const base = DEMO_USERS[role];
     return {
       ...base,
-      name: accountName || base.name,
+      name: displayName || base.name,
       email: accountEmail || base.email,
       avatarInitials:
-        accountName
+        displayName
           ?.split(" ")
           .filter(Boolean)
           .slice(0, 2)
